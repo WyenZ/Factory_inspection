@@ -87,35 +87,50 @@ const rows = [
   {
     supplierId: "SUP26030471088",
     supplierName: "古*****",
-    conditions: ["listed"],
+    conditions: [],
     projectLevel: "B级",
     projectNo: "B20220714K9CG",
     product: "HY0044",
     applicant: "吴良",
     applyDate: "2026-03-04",
     expectDate: "2026-03-06",
+    confirmDate: "2026-03-04",
+    actualDate: "2026-03-04",
+    inspector: "程小亚",
+    score: "60",
+    reportFiles: [{ fileName: "products.xlsx", fileType: "EXEL", fileSize: "1.2 MB", fileNo: "RPT-001" }],
   },
   {
     supplierId: "SUP26030371084",
     supplierName: "3*******",
-    conditions: ["seller"],
+    conditions: [],
     projectLevel: "默认值/未设置",
     projectNo: "B20201013T9P8",
     product: "园林工具套装",
     applicant: "吴良",
     applyDate: "2026-03-03",
     expectDate: "2026-03-31",
+    confirmDate: "2026-03-03",
+    actualDate: "2026-03-03",
+    inspector: "程小亚",
+    score: "123",
+    reportFiles: [{ fileName: "配件SKU修改.xlsx", fileType: "EXEL", fileSize: "860 KB", fileNo: "RPT-002" }],
   },
   {
     supplierId: "SUP26030371081",
     supplierName: "王******",
-    conditions: ["capital"],
+    conditions: [],
     projectLevel: "B级",
     projectNo: "B202211080JY8",
     product: "交叉绑带短上衣（美）",
     applicant: "吴良",
     applyDate: "2026-03-03",
     expectDate: "2026-03-31",
+    confirmDate: "2026-03-03",
+    actualDate: "2026-03-03",
+    inspector: "吴良",
+    score: "77",
+    reportFiles: [{ fileName: "送货清单_202603.xlsx", fileType: "EXEL", fileSize: "1.6 MB", fileNo: "RPT-003" }],
   },
   {
     supplierId: "SUP26030371083",
@@ -138,23 +153,30 @@ const rows = [
     applicant: "吴良",
     applyDate: "2026-03-02",
     expectDate: "2026-03-18",
-  },
-  {
-    supplierId: "SUP26030271076",
-    supplierName: "M*******",
-    conditions: [],
-    projectLevel: "B级",
-    projectNo: "B20211120K2M3",
-    product: "厨房收纳套装",
-    applicant: "吴良",
-    applyDate: "2026-03-02",
-    expectDate: "2026-03-16",
+    confirmDate: "2026-03-02",
+    actualDate: "2026-03-02",
+    inspector: "钟伟青",
+    score: "123",
+    reportFiles: [{ fileName: "运动工厂自评.docx", fileType: "DOC", fileSize: "940 KB", fileNo: "RPT-004" }],
   },
 ];
 
 rows.forEach((row) => {
-  row.stage = "processing";
   row.isExempt = row.conditions.length > 0;
+  row.stage = "review";
+  if (row.isExempt) {
+    row.confirmDate = row.applyDate;
+    row.actualDate = row.applyDate;
+    row.inspector = "免验厂";
+    row.score = "100";
+    row.reportFiles = collectEvidenceFiles(row);
+  }
+  if (!row.isExempt) {
+    row.confirmDate = row.confirmDate || row.applyDate;
+    row.actualDate = row.actualDate || row.confirmDate;
+    row.inspector = row.inspector || "程小亚";
+    row.score = row.score || "60";
+  }
 });
 
 const stageLabels = {
@@ -170,7 +192,7 @@ const stageLabels = {
 
 let activeRow = null;
 let activeAuditRow = null;
-let currentStage = "processing";
+let currentStage = "review";
 
 const tableHead = document.getElementById("tableHead");
 const tableBody = document.getElementById("tableBody");
@@ -247,12 +269,13 @@ document.getElementById("closeAuditModal").addEventListener("click", closeAuditM
 document.getElementById("cancelAuditModal").addEventListener("click", closeAuditModal);
 document.getElementById("confirmAuditModal").addEventListener("click", () => {
   if (activeAuditRow) {
-    activeAuditRow.stage = "passed";
-    currentStage = "passed";
+    const result = document.getElementById("auditResult").value || "passed";
+    activeAuditRow.stage = result;
+    currentStage = result;
     renderRows();
   }
   closeAuditModal();
-  showToast("审核已提交，记录流转至通过");
+  showToast("审核已提交");
 });
 
 document.addEventListener("keydown", (event) => {
@@ -408,7 +431,7 @@ function renderReviewActions(row) {
 }
 
 function renderSupplier(row) {
-  const tags = row.isExempt || row.conditions.length
+  const tags = row.isExempt
     ? `<div class="tag-row">
         <span class="tag exempt">免验厂</span>
         ${row.conditions.map((condition) => renderTag(condition)).join("")}
@@ -442,29 +465,39 @@ function moveExemptionToReview(row) {
 }
 
 function collectEvidenceFiles(row) {
-  return row.conditions
-    .flatMap((condition) => evidenceMap[condition].fields.map(([, value]) => value))
-    .filter((value) => value && typeof value === "object")
-    .map((file) => ({
-      ...file,
-      fileName: file.fileName || String(file),
-      fileType: file.fileType || "FILE",
-      fileSize: file.fileSize || "-",
-      fileNo: file.fileNo || "-",
-    }));
+  const generatedFiles = {
+    listed: [{ fileName: "上市公司企查查结果.pdf", fileType: "PDF", fileSize: "720 KB", fileNo: "QCC-LISTED" }],
+    capital: [{ fileName: "实缴资本与账期证明.pdf", fileType: "PDF", fileSize: "1.1 MB", fileNo: "QCC-CAPITAL" }],
+  };
+
+  return row.conditions.flatMap((condition) => {
+    const uploadedFiles = evidenceMap[condition].fields
+      .map(([, value]) => value)
+      .filter((value) => value && typeof value === "object")
+      .map((file) => ({
+        ...file,
+        fileName: file.fileName || String(file),
+        fileType: file.fileType || "FILE",
+        fileSize: file.fileSize || "-",
+        fileNo: file.fileNo || "-",
+      }));
+    return uploadedFiles.length ? uploadedFiles : generatedFiles[condition] || [];
+  });
 }
 
 function renderReportFiles(row) {
   const files = row.reportFiles && row.reportFiles.length ? row.reportFiles : collectEvidenceFiles(row);
   if (!files.length) return '<span class="muted-text">相关证明文件</span>';
+  const firstFile = files[0];
+  const payload = encodeURIComponent(JSON.stringify(firstFile));
   return `
     <div class="report-list">
-      ${files
-        .map((file) => {
-          const payload = encodeURIComponent(JSON.stringify(file));
-          return `<a href="#" data-file-preview="${payload}">${escapeHtml(file.fileName)}</a>`;
-        })
-        .join("")}
+      <a class="report-file" href="#" data-file-preview="${payload}">
+        <span class="report-file-icon">${escapeHtml(firstFile.fileType || "FILE")}</span>
+        <span class="report-file-names">
+          ${files.map((file) => `<span>${escapeHtml(file.fileName)}</span>`).join("")}
+        </span>
+      </a>
     </div>
   `;
 }
@@ -489,6 +522,7 @@ function openAssignModal(row) {
 
 function openAuditModal(row) {
   activeAuditRow = row;
+  document.getElementById("auditResult").value = "";
   auditModal.classList.add("open");
   auditModal.setAttribute("aria-hidden", "false");
 }

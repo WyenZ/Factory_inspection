@@ -315,9 +315,12 @@ input.field {
 .inspection-table td {
   border-right: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  padding: 14px 12px;
+  padding: 10px 8px;
   text-align: center;
   vertical-align: middle;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .inspection-table th {
@@ -348,25 +351,26 @@ input.field {
 .supplier-cell {
   display: grid;
   justify-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .supplier-id {
   color: var(--teal-dark);
+  font-size: 14px;
   font-weight: 500;
 }
 
 .supplier-sub {
   color: var(--teal-dark);
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .tag-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
-  max-width: 310px;
+  gap: 4px;
+  max-width: 116px;
 }
 
 .tag {
@@ -374,10 +378,10 @@ input.field {
   align-items: center;
   height: 22px;
   border-radius: 4px;
-  padding: 0 7px;
+  padding: 0 6px;
   color: #596273;
   background: #eef2f7;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -420,8 +424,9 @@ input.field {
 .project {
   display: grid;
   justify-items: center;
-  gap: 8px;
-  line-height: 1.4;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 1.35;
 }
 
 .remark {
@@ -431,7 +436,7 @@ input.field {
 .actions {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  gap: 3px;
   white-space: nowrap;
 }
 
@@ -439,6 +444,7 @@ input.field {
   border: 0;
   padding: 0;
   background: transparent;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -460,21 +466,51 @@ input.field {
 
 .report-list {
   display: grid;
-  gap: 8px;
   justify-items: center;
 }
 
 .report-list a {
-  max-width: 126px;
-  overflow: hidden;
+  max-width: 104px;
   color: var(--blue);
-  text-overflow: ellipsis;
   text-decoration: none;
-  white-space: nowrap;
 }
 
 .report-list a:hover {
   text-decoration: underline;
+}
+
+.report-file {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.report-file-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 66px;
+  border: 3px solid #4aa0ff;
+  border-radius: 6px;
+  color: #3185ed;
+  background: #bfe0ff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.report-file-names {
+  display: grid;
+  gap: 3px;
+  max-width: 104px;
+  color: var(--blue);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.report-file-names span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .pager {
@@ -611,6 +647,17 @@ input.field {
   padding: 0 14px;
   color: #aab2bf;
   background: var(--white);
+}
+
+.audit-select {
+  width: 262px;
+  height: 38px;
+  border: 1px solid #d5dce8;
+  border-radius: 4px;
+  padding: 0 14px;
+  color: #aab2bf;
+  background: var(--white);
+  outline: none;
 }
 
 .regular-fields {

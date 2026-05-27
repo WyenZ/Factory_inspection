@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>免验厂原型二 - 分配验厂</title>
+    <title>免验厂原型三 - 待审核</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
@@ -83,9 +83,9 @@
 
           <div class="status-tabs" id="statusTabs">
             <button type="button" data-stage="agreement">待协议确认(59)</button>
-            <button class="active" type="button" data-stage="processing">待处理(28)</button>
+            <button type="button" data-stage="processing">待处理(28)</button>
             <button type="button" data-stage="inspection">待验厂(5)</button>
-            <button type="button" data-stage="review">待审核(6)</button>
+            <button class="active" type="button" data-stage="review">待审核(6)</button>
             <button type="button" data-stage="passed">通过(1792)</button>
             <button type="button" data-stage="failed">不通过(475)</button>
             <button type="button" data-stage="rejected">驳回(472)</button>
@@ -122,7 +122,11 @@
         <div class="modal-body">
           <section class="form-row">
             <label class="required">验厂结果</label>
-            <button class="input-like" type="button">请选择 <span>⌄</span></button>
+            <select class="audit-select" id="auditResult">
+              <option value="">请选择</option>
+              <option value="passed">通过</option>
+              <option value="failed">不通过</option>
+            </select>
           </section>
 
           <section class="form-row upload-row">
