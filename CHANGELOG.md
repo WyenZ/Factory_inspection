@@ -11,3 +11,8 @@
 - Add exemption tags in the supplier column: `免验厂`, `大卖背书`, `上市公司`, `三方验厂`, `实缴资本`.
 - Add five exemption examples: four single-condition rows and one two-condition row.
 - Add assignment modal toggle for whether to use exemption; selecting yes collapses ordinary assignment fields and displays uploaded evidence or API query results.
+
+## 0.2.1 - 2026-05-27
+
+- Add clickable proof-file links for third-party inspection and benchmark seller endorsement evidence.
+- Add a prototype file preview dialog for proof-file links.

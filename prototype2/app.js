@@ -10,7 +10,15 @@ const evidenceMap = {
     title: "三方验厂",
     type: "上传资料",
     fields: [
-      ["三方验厂报告", "FCCA_2026_03_01.pdf"],
+      [
+        "三方验厂报告",
+        {
+          fileName: "FCCA_2026_03_01.pdf",
+          fileType: "PDF",
+          fileSize: "2.4 MB",
+          fileNo: "TPR-20260301-094",
+        },
+      ],
       ["报告日期", "2026-03-01"],
       ["有效期", "2027-03-01"],
       ["审核口径", "有效期内知名第三方关于生产与品质控制的验厂通过企业"],
@@ -30,8 +38,24 @@ const evidenceMap = {
     title: "大卖背书",
     type: "上传资料",
     fields: [
-      ["发票", "近6个月发票汇总.zip"],
-      ["商务协议", "benchmark_seller_agreement.pdf"],
+      [
+        "发票",
+        {
+          fileName: "近6个月发票汇总.zip",
+          fileType: "ZIP",
+          fileSize: "8.6 MB",
+          fileNo: "INV-20260303-084",
+        },
+      ],
+      [
+        "商务协议",
+        {
+          fileName: "benchmark_seller_agreement.pdf",
+          fileType: "PDF",
+          fileSize: "1.8 MB",
+          fileNo: "AGR-20260303-084",
+        },
+      ],
       ["标杆大卖", "Anker / SHEIN"],
       ["近6个月销售额", "186.4 万元"],
     ],
@@ -138,6 +162,7 @@ const collapsedNote = document.getElementById("collapsedNote");
 const exemptionSection = document.getElementById("exemptionSection");
 const exemptionContent = document.getElementById("exemptionContent");
 const toast = document.getElementById("toast");
+let filePreview = null;
 
 renderRows();
 
@@ -152,6 +177,13 @@ modal.addEventListener("change", (event) => {
   const input = event.target.closest('input[name="useExemption"]');
   if (!input) return;
   renderAssignMode(input.value === "yes");
+});
+
+modal.addEventListener("click", (event) => {
+  const fileLink = event.target.closest("[data-file-preview]");
+  if (!fileLink) return;
+  event.preventDefault();
+  openFilePreview(fileLink.dataset.filePreview);
 });
 
 document.getElementById("closeModal").addEventListener("click", closeModal);
@@ -269,7 +301,7 @@ function renderEvidenceCard(evidence, condition) {
         ${evidence.fields
           .map(
             ([label, value]) =>
-              `<div><span>${escapeHtml(label)}：</span>${escapeHtml(value)}</div>`,
+              `<div><span>${escapeHtml(label)}：</span>${renderEvidenceValue(value)}</div>`,
           )
           .join("")}
       </div>
@@ -277,9 +309,54 @@ function renderEvidenceCard(evidence, condition) {
   `;
 }
 
+function renderEvidenceValue(value) {
+  if (!value || typeof value !== "object") return escapeHtml(value);
+  const payload = encodeURIComponent(JSON.stringify(value));
+  return `<a class="file-link" href="#" data-file-preview="${payload}">📎 ${escapeHtml(value.fileName)}</a>`;
+}
+
+function openFilePreview(encodedFile) {
+  const file = JSON.parse(decodeURIComponent(encodedFile));
+  if (!filePreview) {
+    filePreview = document.createElement("div");
+    filePreview.className = "file-preview";
+    document.body.appendChild(filePreview);
+  }
+  filePreview.innerHTML = `
+    <div class="file-preview-card" role="dialog" aria-modal="true" aria-label="证明文件预览">
+      <header>
+        <h2>证明文件预览</h2>
+        <button type="button" data-close-preview aria-label="关闭">×</button>
+      </header>
+      <div class="file-preview-body">
+        <div class="file-icon">${escapeHtml(file.fileType)}</div>
+        <div class="file-meta">
+          <strong>${escapeHtml(file.fileName)}</strong>
+          <span>文件编号：${escapeHtml(file.fileNo)}</span>
+          <span>文件大小：${escapeHtml(file.fileSize)}</span>
+          <span>当前为原型预览，真实系统中点击后打开或下载附件。</span>
+        </div>
+      </div>
+      <footer>
+        <button type="button" data-close-preview>关闭</button>
+      </footer>
+    </div>
+  `;
+  filePreview.classList.add("open");
+  filePreview.querySelectorAll("[data-close-preview]").forEach((button) => {
+    button.addEventListener("click", closeFilePreview);
+  });
+}
+
+function closeFilePreview() {
+  if (!filePreview) return;
+  filePreview.classList.remove("open");
+}
+
 function closeModal() {
   modal.classList.remove("open");
   modal.setAttribute("aria-hidden", "true");
+  closeFilePreview();
 }
 
 function showToast(message) {
