@@ -7,6 +7,12 @@
 - `index.html`
 - `styles.css`
 - `app.js`
+- `prototype2/` contains the second prototype for supplier-center allocation and exemption display.
+
+## Published Pages
+
+- Prototype 1: `https://wyenz.github.io/Factory_inspection/`
+- Prototype 2: `https://wyenz.github.io/Factory_inspection/prototype2/`
 
 ## Local Preview
 

@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>免验厂原型二 - 分配验厂</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo"><span>STAR</span>MERX</div>
+          <div class="system-name">星商供应商中心</div>
+        </div>
+        <nav class="nav">
+          <a href="#">◎ 首页</a>
+          <a href="#">▣ 质检管理 <span>⌄</span></a>
+          <a href="#">▱ 供应商管理 <em>New</em></a>
+          <a class="open" href="#">▰ 资料管理 <span>⌃</span></a>
+          <a class="sub" href="#">供应商列表</a>
+          <a class="sub" href="#">地址簿</a>
+          <a class="sub" href="#">供应商统计列表</a>
+          <a class="sub" href="#">sku统计列表</a>
+          <a class="sub" href="#">泛精供应商升级审核</a>
+          <a class="sub" href="#">第三方付款方式审核</a>
+          <a class="active" href="#">品牌验厂管理</a>
+          <a class="sub" href="#">样品质检</a>
+          <a class="sub" href="#">产前样管理</a>
+          <a class="sub" href="#">核价管理</a>
+          <a class="sub" href="#">大货质检报表</a>
+          <a class="sub" href="#">客诉管理</a>
+          <a class="sub" href="#">客诉报表/看板</a>
+          <a href="#">⚙ 基础配置 <span>⌄</span></a>
+          <a href="#">☆ 供应商评分 <span>⌄</span></a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="module-nav">
+            <span>⌂ 仓储中心</span>
+            <span>🛒 采购中心</span>
+            <span>🚚 物流中心</span>
+            <span>▧ 备货中心</span>
+          </div>
+          <div class="notice">所有，任何泄漏公司数据信息是违法行为，公司保留追究法律责任</div>
+          <div class="user">🧙 初兴</div>
+        </header>
+
+        <div class="crumb">
+          <button type="button">☰</button>
+          <span>首页</span>
+          <span>›</span>
+          <span>资料管理</span>
+          <span>›</span>
+          <strong>品牌验厂管理</strong>
+        </div>
+
+        <div class="tabs">
+          <button type="button">首页</button>
+          <button class="current" type="button">品牌验厂管理 ×</button>
+        </div>
+
+        <section class="panel">
+          <div class="filters">
+            <div class="field select">供应商ID⌄</div>
+            <input class="field wide" placeholder="请输入" />
+            <div class="field select">申请人⌄</div>
+            <div class="field wide muted">请选择⌄</div>
+            <label>项目类型</label>
+            <div class="field wide muted">请选择⌄</div>
+            <label>验厂申请时间</label>
+            <div class="date-range"><span>▦ 开始日期</span><b>至</b><span>结束日期</span></div>
+            <label>期望验厂时间</label>
+            <div class="date-range"><span>▦ 开始日期</span><b>至</b><span>结束日期</span></div>
+            <button class="teal" type="button">导出</button>
+            <button class="teal" type="button">查询</button>
+            <button type="button">重置</button>
+          </div>
+
+          <div class="standard">供应商验厂审核标准：品牌七部 ≥ 75分，视为通过；　其他品部 ≥ 60分，视为通过。</div>
+
+          <div class="status-tabs">
+            <button type="button">待协议确认(59)</button>
+            <button class="active" type="button">待处理(28)</button>
+            <button type="button">待验厂(5)</button>
+            <button type="button">待审核(6)</button>
+            <button type="button">通过(1792)</button>
+            <button type="button">不通过(475)</button>
+            <button type="button">驳回(472)</button>
+            <button type="button">全部(2961)</button>
+            <button class="hide-search" type="button">隐藏搜索栏</button>
+          </div>
+
+          <table class="inspection-table">
+            <thead>
+              <tr>
+                <th class="check"><input type="checkbox" /></th>
+                <th>供应商</th>
+                <th>项目</th>
+                <th>申请人</th>
+                <th>验厂申请时间</th>
+                <th>期望验厂时间</th>
+                <th>备注</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+
+          <footer class="pager">
+            <span>共 28 条</span>
+            <button type="button">50条/页⌄</button>
+            <button disabled type="button">‹</button>
+            <button class="page" type="button">1</button>
+            <button disabled type="button">›</button>
+            <span>前往</span>
+            <input value="1" />
+            <span>页</span>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-mask" id="assignModal" aria-hidden="true">
+      <div class="assign-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <header>
+          <h1 id="modalTitle">分配验厂人员</h1>
+          <button id="closeModal" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <div class="modal-body">
+          <div class="supplier-summary" id="modalSupplier"></div>
+
+          <section class="form-row radio-row">
+            <label class="required">是否免验</label>
+            <div class="radio-group">
+              <label><input type="radio" name="useExemption" value="no" checked /> 否</label>
+              <label><input type="radio" name="useExemption" value="yes" /> 是</label>
+            </div>
+          </section>
+
+          <section class="regular-fields" id="regularFields">
+            <div class="form-row">
+              <label class="required">确认验厂时间</label>
+              <button class="input-like" type="button">▦ 选择日期</button>
+            </div>
+            <div class="form-row">
+              <label class="required">验厂人员安排</label>
+              <button class="input-like" type="button">请选择 <span>⌄</span></button>
+            </div>
+          </section>
+
+          <section class="collapsed-note is-hidden" id="collapsedNote">
+            普通验厂的时间和人员安排已折叠，当前按免验厂资料进入待审核。
+          </section>
+
+          <section class="exemption-section is-hidden" id="exemptionSection">
+            <div class="section-title">免验厂资料 / API 查询结果</div>
+            <div class="exemption-content" id="exemptionContent"></div>
+          </section>
+        </div>
+
+        <footer>
+          <button type="button" id="cancelModal">取 消</button>
+          <button class="primary" type="button" id="confirmModal">确 定</button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
