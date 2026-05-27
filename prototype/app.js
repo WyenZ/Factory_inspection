@@ -59,6 +59,9 @@ const state = {
 const modal = document.getElementById("inspectionModal");
 const modalSupplier = document.getElementById("modalSupplier");
 const onsiteSection = document.getElementById("onsiteSection");
+const onsiteExpectedDate = document.getElementById("onsiteExpectedDate");
+const onsiteRemark = document.getElementById("onsiteRemark");
+const onsiteRemarkCount = document.getElementById("onsiteRemarkCount");
 const exemptSection = document.getElementById("exemptSection");
 const conditionTrigger = document.getElementById("conditionTrigger");
 const conditionTriggerText = document.getElementById("conditionTriggerText");
@@ -153,10 +156,20 @@ document.addEventListener("change", (event) => {
     state.dateFields[dateStateKey(dateInput.dataset.dateCode, dateInput.dataset.dateField)] =
       dateInput.value;
     renderModalStatus();
+    return;
+  }
+
+  if (event.target === onsiteExpectedDate) {
+    renderModalStatus();
   }
 });
 
 document.addEventListener("input", (event) => {
+  if (event.target === onsiteRemark) {
+    onsiteRemarkCount.textContent = `${onsiteRemark.value.length}/256`;
+    return;
+  }
+
   const accountInput = event.target.closest("[data-account-code]");
   if (accountInput) {
     state.accountDays[accountInput.dataset.accountCode] = accountInput.value;
@@ -217,6 +230,9 @@ function openModal(supplierId) {
   conditionPanel.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
     checkbox.checked = false;
   });
+  onsiteExpectedDate.value = "";
+  onsiteRemark.value = "";
+  onsiteRemarkCount.textContent = "0/256";
 
   closeConditionPanel();
   renderInspectionType();
@@ -584,6 +600,10 @@ function hasApiFailure(code) {
 
 function confirmApply() {
   if (state.inspectionType === "onsite") {
+    if (!onsiteExpectedDate.value) {
+      setModalStatus("请填写期望验厂时间。", "error");
+      return;
+    }
     markApplication("onsite", []);
     closeModal();
     showToast("已提交普通验厂申请，流程进入待验厂。");
@@ -619,7 +639,11 @@ function confirmApply() {
 
 function renderModalStatus() {
   if (state.inspectionType === "onsite") {
-    setModalStatus("当前为普通验厂申请，可直接确定进入流程。", "info");
+    if (onsiteExpectedDate.value) {
+      setModalStatus("当前为普通验厂申请，可确定进入待验厂流程。", "success");
+      return;
+    }
+    setModalStatus("当前为普通验厂申请，请填写期望验厂时间。", "info");
     return;
   }
 
@@ -671,7 +695,8 @@ function markApplication(type, codes) {
   if (type === "onsite") {
     suppliers[state.supplierId].inspectionStatus = "普通验厂 · 待验厂";
     statusCell.innerHTML = '<span class="status-pill warning">普通验厂 · 待验厂</span>';
-    remarkCell.textContent = "已发起普通验厂";
+    const remark = onsiteRemark.value.trim();
+    remarkCell.textContent = `期望验厂：${onsiteExpectedDate.value}${remark ? `；${remark}` : ""}`;
     return;
   }
 

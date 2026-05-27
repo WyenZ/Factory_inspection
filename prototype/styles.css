@@ -492,6 +492,18 @@ button {
   color: #43606f;
 }
 
+.onsite-form {
+  display: grid;
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.required-label::before {
+  content: "*";
+  margin-right: 4px;
+  color: var(--red-500);
+}
+
 .is-hidden {
   display: none !important;
 }
@@ -678,6 +690,31 @@ button {
   padding: 0 12px;
   color: #333b47;
   outline: none;
+}
+
+.textarea-wrap {
+  position: relative;
+}
+
+.textarea-wrap textarea {
+  width: 100%;
+  min-height: 108px;
+  resize: vertical;
+  border: 1px solid var(--gray-300);
+  border-radius: 5px;
+  padding: 12px 14px 28px;
+  color: #333b47;
+  line-height: 1.5;
+  outline: none;
+}
+
+.textarea-wrap span {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  color: var(--gray-500);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .follow-up-grid {

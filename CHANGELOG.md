@@ -1,18 +1,37 @@
 # Changelog
 
-## 0.1.0 - 2026-05-27
+## 0.1.0 - 2026-05-25
 
-- Publish a clean GitHub Pages version of the factory inspection exemption prototype.
-- Include only the frontend prototype files and minimal project documentation.
+- 新增免验厂静态前端原型。
+- 复刻品牌中心供应商数量详情列表、操作下拉和申请验厂弹窗。
+- 支持普通验厂直接提交进入待验厂。
+- 支持免验厂 1-1、1-2、1-3、1-4 多选条件与动态材料区。
+- 支持 1-2、1-4 API 查询结果模拟和达标/未达标示例切换。
+
+## 0.1.1 - 2026-05-25
+
+- 调整 1-1：去掉账期，新增报告日期和有效期。
+- 调整 1-3：去掉账期，仅保留发票和商务协议上传。
+- 调整 1-4：API 仅查询工商实缴资本，新增商务协议上传，账期改为手动填写。
+- 更新 1-1、1-4 的校验规则。
+
+## 0.1.2 - 2026-05-25
+
+- 新增 GitLab Pages 部署配置。
+- 新增 README 和 CHANGELOG，记录原型能力、部署方式和版本变更。
+- 新增 `.gitignore`，避免提交本地系统文件和构建产物。
 
 ## 0.2.0 - 2026-05-27
 
-- Add prototype 2 for supplier-center brand inspection assignment.
-- Add exemption tags in the supplier column: `免验厂`, `大卖背书`, `上市公司`, `三方验厂`, `实缴资本`.
-- Add five exemption examples: four single-condition rows and one two-condition row.
-- Add assignment modal toggle for whether to use exemption; selecting yes collapses ordinary assignment fields and displays uploaded evidence or API query results.
-
-## 0.2.1 - 2026-05-27
-
-- Add clickable proof-file links for third-party inspection and benchmark seller endorsement evidence.
-- Add a prototype file preview dialog for proof-file links.
+- 新增 `prototype2/`：供应商中心品牌验厂管理原型，覆盖“分配验厂人员”弹窗中的免验厂资料/API 查询结果展示。
+- 新增 `prototype3/`：独立“待审核”页原型，便于直接演示免验厂审核列表。
+- `prototype3/` 待审核列表支持：
+  - 免验厂供应商字段下展示 `免验厂` 标签。
+  - 按实际条件展示 `三方验厂`、`上市公司`、`大卖背书`、`实缴资本` 标签。
+  - 免验厂记录自动展示验厂人员 `免验厂`、验厂分数 `100`。
+  - 验厂报告列用单个蓝色文件图标展示证明文件，多个文件名并列显示在图标下方。
+  - 点击“审核”打开原有风格审核弹窗，验厂结果下拉包含 `通过`、`不通过`。
+- 更新 GitHub Pages，新增以下入口：
+  - https://wyenz.github.io/Factory_inspection/prototype/
+  - https://wyenz.github.io/Factory_inspection/prototype2/
+  - https://wyenz.github.io/Factory_inspection/prototype3/
