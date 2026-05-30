@@ -304,7 +304,18 @@ function renderConditionBody(code) {
   }
 
   if (code === "1-2") {
-    return renderApiBlock("1-2");
+    return `
+      ${renderApiBlock("1-2")}
+      <div class="form-grid follow-up-grid">
+        ${renderUpload(
+          "1-2",
+          "apiFallback",
+          "补充材料",
+          "可上传上市信息证明、工厂信息清单等",
+          { optional: true, full: true },
+        )}
+      </div>
+    `;
   }
 
   if (code === "1-3") {
@@ -321,15 +332,25 @@ function renderConditionBody(code) {
     <div class="form-grid follow-up-grid">
       ${renderUpload("1-4", "businessAgreement", "商务协议", "可证明账期的协议材料")}
       ${renderAccountInput("1-4", "账期", "填写账期天数，例如 60")}
+      ${renderUpload(
+        "1-4",
+        "apiFallback",
+        "补充材料",
+        "可上传工商实缴证明、工厂信息清单等",
+        { optional: true, full: true },
+      )}
     </div>
   `;
 }
 
-function renderUpload(code, key, title, hint) {
+function renderUpload(code, key, title, hint, options = {}) {
   const fileName = state.files[fileStateKey(code, key)];
   return `
-    <div class="form-field">
-      <span class="form-caption">${title}</span>
+    <div class="form-field ${options.full ? "full" : ""}">
+      <span class="form-caption">
+        ${escapeHtml(title)}
+        ${options.optional ? '<em class="optional-mark">非必填</em>' : ""}
+      </span>
       <label class="upload-box ${fileName ? "has-file" : ""}">
         <span class="upload-icon">⇧</span>
         <span>
