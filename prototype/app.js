@@ -24,7 +24,7 @@ const conditionMeta = {
   },
   "1-2": {
     title: "主板上市公司",
-    desc: "调用企查查 API 查询上市交易信息，结果不可修改。",
+    desc: "人工补充主板上市证明材料，由审核人员人工确认。",
   },
   "1-3": {
     title: "标杆大卖背书",
@@ -32,13 +32,11 @@ const conditionMeta = {
   },
   "1-4": {
     title: "工商实缴及账期达标",
-    desc: "调用企查查 API 查询工商实缴资本，上传商务协议并手动填写账期。",
+    desc: "人工补充工商实缴资本证明、商务协议并填写账期。",
   },
 };
 
 const orderedCodes = ["1-1", "1-2", "1-3", "1-4"];
-const apiCodes = new Set(["1-2", "1-4"]);
-const queryTimers = {};
 const todayDate = new Date().toISOString().slice(0, 10);
 
 const state = {
@@ -48,11 +46,6 @@ const state = {
   files: {},
   accountDays: {},
   dateFields: {},
-  queryResults: {},
-  apiScenario: {
-    "1-2": "pass",
-    "1-4": "pass",
-  },
   touched: false,
 };
 
@@ -114,13 +107,6 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const scenarioButton = event.target.closest("[data-scenario-code]");
-  if (scenarioButton) {
-    const code = scenarioButton.dataset.scenarioCode;
-    state.apiScenario[code] = scenarioButton.dataset.scenario;
-    triggerExternalQuery(code);
-    return;
-  }
 });
 
 document.addEventListener("change", (event) => {
@@ -137,9 +123,6 @@ document.addEventListener("change", (event) => {
     const code = conditionInput.value;
     if (conditionInput.checked) {
       state.selectedConditions.add(code);
-      if (apiCodes.has(code)) {
-        triggerExternalQuery(code);
-      }
     } else {
       state.selectedConditions.delete(code);
     }
@@ -224,11 +207,6 @@ function openModal(supplierId) {
   state.files = {};
   state.accountDays = {};
   state.dateFields = {};
-  state.queryResults = {};
-  state.apiScenario = {
-    "1-2": "pass",
-    "1-4": "pass",
-  };
   state.touched = false;
 
   modalSupplier.textContent = `${supplier.id} / ${supplier.name}`;
@@ -256,7 +234,6 @@ function openModal(supplierId) {
 function closeModal() {
   modal.classList.remove("is-open");
   modal.setAttribute("aria-hidden", "true");
-  Object.values(queryTimers).forEach((timer) => clearTimeout(timer));
 }
 
 function renderInspectionType() {
@@ -284,7 +261,7 @@ function renderConditionSections() {
   const selected = orderedCodes.filter((code) => state.selectedConditions.has(code));
   if (!selected.length) {
     conditionSections.innerHTML =
-      '<div class="empty-state">选择免验条件后，这里会展示对应材料上传、日期填写、账期填写或 API 查询结果。</div>';
+      '<div class="empty-state">选择免验条件后，这里会展示对应人工补充材料、日期填写或账期填写要求。</div>';
     return;
   }
 
@@ -295,7 +272,7 @@ function renderConditionCard(code) {
   const meta = conditionMeta[code];
   const status = getConditionStatus(code);
   const errors = validateCondition(code).messages;
-  const showErrors = state.touched || hasApiFailure(code);
+  const showErrors = state.touched;
   return `
     <article class="condition-card" data-condition-card="${code}">
       <header>
@@ -330,14 +307,13 @@ function renderConditionBody(code) {
 
   if (code === "1-2") {
     return `
-      ${renderApiBlock("1-2")}
-      <div class="form-grid follow-up-grid">
+      <div class="form-grid">
         ${renderUpload(
           "1-2",
-          "apiFallback",
-          "补充材料",
-          "可上传上市信息证明、工厂信息清单等",
-          { optional: true, full: true },
+          "listedProof",
+          "上市证明材料",
+          "人工补充主板上市证明材料、证券交易所公告、股票代码截图等",
+          { full: true },
         )}
       </div>
     `;
@@ -353,17 +329,10 @@ function renderConditionBody(code) {
   }
 
   return `
-    ${renderApiBlock("1-4")}
-    <div class="form-grid follow-up-grid">
+    <div class="form-grid">
+      ${renderUpload("1-4", "paidCapitalProof", "实缴资本证明", "人工补充工商实缴资本证明、验资报告等")}
       ${renderUpload("1-4", "businessAgreement", "商务协议", "可证明账期的协议材料")}
       ${renderAccountInput("1-4", "账期", "填写账期天数，例如 60")}
-      ${renderUpload(
-        "1-4",
-        "apiFallback",
-        "补充材料",
-        "可上传工商实缴证明、工厂信息清单等",
-        { optional: true, full: true },
-      )}
     </div>
   `;
 }
@@ -423,123 +392,6 @@ function renderDateInput(code, field, label) {
   `;
 }
 
-function renderApiBlock(code) {
-  const result = state.queryResults[code] || { status: "idle" };
-  const isLoading = result.status === "loading" || result.status === "idle";
-  const activeScenario = state.apiScenario[code];
-  const fields = getApiFields(code, result);
-  const loadingText =
-    code === "1-4" ? "正在调用企查查 API 查询工商实缴资本..." : "正在调用企查查 API 查询...";
-  return `
-    <div class="api-toolbar">
-      <div class="api-state">${isLoading ? loadingText : "API 查询结果已回填，不可修改"}</div>
-      <div class="scenario-buttons" aria-label="${code} 查询示例切换">
-        <button class="${activeScenario === "pass" ? "is-active" : ""}" type="button" data-scenario-code="${code}" data-scenario="pass">达标示例</button>
-        <button class="${activeScenario === "fail" ? "is-active" : ""}" type="button" data-scenario-code="${code}" data-scenario="fail">未达标示例</button>
-      </div>
-    </div>
-    <div class="form-grid">
-      ${fields
-        .map(
-          (field) => `
-            <div class="form-field ${field.full ? "full" : ""}">
-              <label>${escapeHtml(field.label)}</label>
-              <input type="text" readonly value="${escapeHtml(field.value)}" />
-            </div>
-          `,
-        )
-        .join("")}
-    </div>
-  `;
-}
-
-function getApiFields(code, result) {
-  if (result.status === "loading" || result.status === "idle" || !result.status) {
-    return [
-      { label: "查询主体", value: suppliers[state.supplierId].name },
-      { label: "查询状态", value: "查询中" },
-      { label: "查询结论", value: "等待 API 返回", full: true },
-    ];
-  }
-
-  if (code === "1-2") {
-    return [
-      { label: "查询主体", value: result.companyName },
-      { label: "上市板块", value: result.board },
-      { label: "股票代码", value: result.stockCode },
-      { label: "查询时间", value: result.queryAt },
-      { label: "查询结论", value: result.summary, full: true },
-    ];
-  }
-
-  return [
-    { label: "查询主体", value: result.companyName },
-    { label: "工商实缴资本", value: `${result.paidCapital} 万元 RMB` },
-    { label: "查询时间", value: result.queryAt },
-    { label: "查询结论", value: result.summary, full: true },
-  ];
-}
-
-function triggerExternalQuery(code) {
-  clearTimeout(queryTimers[code]);
-  state.queryResults[code] = { status: "loading" };
-  renderConditionSections();
-  renderModalStatus();
-
-  queryTimers[code] = setTimeout(() => {
-    state.queryResults[code] = buildApiResult(code, state.apiScenario[code]);
-    renderConditionSections();
-    renderModalStatus();
-  }, 650);
-}
-
-function buildApiResult(code, scenario) {
-  const supplier = suppliers[state.supplierId];
-  const queryAt = "2026-05-25 16:20:18";
-
-  if (code === "1-2") {
-    if (scenario === "pass") {
-      return {
-        status: "success",
-        matched: true,
-        companyName: `${supplier.name}科技股份有限公司`,
-        board: "深交所主板",
-        stockCode: "002681",
-        queryAt,
-        summary: "查询到主板上市交易信息，符合 1-2 免验条件。",
-      };
-    }
-    return {
-      status: "success",
-      matched: false,
-      companyName: `${supplier.name}贸易有限公司`,
-      board: "未查询到主板上市记录",
-      stockCode: "-",
-      queryAt,
-      summary: "未查询到主板上市交易信息，无法按 1-2 申请免验厂。",
-    };
-  }
-
-  if (scenario === "pass") {
-    return {
-      status: "success",
-      matched: true,
-      companyName: `${supplier.name}制造有限公司`,
-      paidCapital: 2600,
-      queryAt,
-      summary: "工商实缴资本不小于 2000 万，满足 1-4 的实缴资本要求。",
-    };
-  }
-  return {
-    status: "success",
-    matched: false,
-    companyName: `${supplier.name}制造有限公司`,
-    paidCapital: 1200,
-    queryAt,
-    summary: "工商实缴资本小于 2000 万，无法满足 1-4 的实缴资本要求。",
-  };
-}
-
 function validateCondition(code) {
   const messages = [];
 
@@ -560,11 +412,8 @@ function validateCondition(code) {
   }
 
   if (code === "1-2") {
-    const result = state.queryResults["1-2"];
-    if (!result || result.status === "loading") {
-      messages.push("主板上市信息查询未完成");
-    } else if (!result.matched) {
-      messages.push("API 未查询到主板上市信息");
+    if (!state.files[fileStateKey("1-2", "listedProof")]) {
+      messages.push("请上传上市证明材料");
     }
   }
 
@@ -578,13 +427,8 @@ function validateCondition(code) {
   }
 
   if (code === "1-4") {
-    const result = state.queryResults["1-4"];
-    if (!result || result.status === "loading") {
-      messages.push("工商实缴资本查询未完成");
-    } else {
-      if (Number(result.paidCapital) < 2000) {
-        messages.push("工商实缴资本需不小于 2000 万元 RMB");
-      }
+    if (!state.files[fileStateKey("1-4", "paidCapitalProof")]) {
+      messages.push("请上传实缴资本证明");
     }
     if (!state.files[fileStateKey("1-4", "businessAgreement")]) {
       messages.push("请上传商务协议");
@@ -604,28 +448,16 @@ function validateCondition(code) {
 }
 
 function getConditionStatus(code) {
-  if (apiCodes.has(code)) {
-    const result = state.queryResults[code];
-    if (!result || result.status === "loading") {
-      return { text: "查询中", className: "warning" };
-    }
-  }
-
   const validation = validateCondition(code);
   if (validation.valid) {
     return { text: "已达标", className: "success" };
   }
 
-  if (hasApiFailure(code) || state.touched) {
+  if (state.touched) {
     return { text: "未达标", className: "danger" };
   }
 
   return { text: "待补充", className: "warning" };
-}
-
-function hasApiFailure(code) {
-  const result = state.queryResults[code];
-  return apiCodes.has(code) && result && result.status === "success" && !result.matched;
 }
 
 function updateNumberStepper(button) {
@@ -692,7 +524,7 @@ function renderModalStatus() {
 
   const selected = orderedCodes.filter((code) => state.selectedConditions.has(code));
   if (!selected.length) {
-    setModalStatus("请选择至少一个免验厂条件；系统会按所选条件展示材料或 API 查询结果。", "info");
+    setModalStatus("请选择至少一个免验厂条件；系统会按所选条件展示人工补材要求。", "info");
     return;
   }
 
@@ -707,22 +539,13 @@ function renderModalStatus() {
     return;
   }
 
-  const loading = selected.some((code) => {
-    const result = state.queryResults[code];
-    return apiCodes.has(code) && (!result || result.status === "loading");
-  });
-  if (loading) {
-    setModalStatus("已选择免验条件，正在回填 API 查询结果。", "info");
-    return;
-  }
-
   const allValid = selected.every((code) => validateCondition(code).valid);
   if (allValid) {
     setModalStatus("已选免验条件均达标，可确定提交并进入待审核。", "success");
     return;
   }
 
-  setModalStatus("已选择免验条件，请补齐材料或调整未达标查询项。", "info");
+  setModalStatus("已选择免验条件，请补齐人工补充材料。", "info");
 }
 
 function setModalStatus(message, type) {

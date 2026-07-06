@@ -3,6 +3,8 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
+const app = readFileSync(new URL("./app.js", import.meta.url), "utf8");
+const css = readFileSync(new URL("./styles.css", import.meta.url), "utf8");
 
 function extractOnsiteSection() {
   const match = html.match(/<section class="form-block" id="onsiteSection">([\s\S]*?)<section class="form-block is-hidden" id="exemptSection">/);
@@ -48,4 +50,32 @@ test("ordinary inspection modal shows requested pre-factory information fields",
   assert.match(preFactorySection, /项目名称自动填充/, "project name placeholder should match the target");
   assert.doesNotMatch(preFactorySection, /验厂资料/, "old section title should be replaced");
   assert.doesNotMatch(preFactorySection, /期望验厂日期/, "expected inspection date should stay out of pre-factory info");
+});
+
+test("exemption flow uses manual supplement materials instead of API query", () => {
+  const source = `${html}\n${app}\n${css}`;
+
+  for (const forbidden of [
+    "API",
+    "企查查",
+    "queryResults",
+    "apiScenario",
+    "apiCodes",
+    "renderApiBlock",
+    "triggerExternalQuery",
+    "buildApiResult",
+  ]) {
+    assert.doesNotMatch(source, new RegExp(forbidden), `${forbidden} should be removed`);
+  }
+
+  for (const expected of [
+    "上市证明材料",
+    "人工补充主板上市证明材料",
+    "请上传上市证明材料",
+    "实缴资本证明",
+    "人工补充工商实缴资本证明",
+    "请上传实缴资本证明",
+  ]) {
+    assert.match(app, new RegExp(expected), `${expected} should be present`);
+  }
 });
