@@ -60,6 +60,7 @@ const modal = document.getElementById("inspectionModal");
 const modalSupplier = document.getElementById("modalSupplier");
 const onsiteSection = document.getElementById("onsiteSection");
 const onsiteExpectedDate = document.getElementById("onsiteExpectedDate");
+const onsiteInputs = onsiteSection.querySelectorAll("input");
 const onsiteRemark = document.getElementById("onsiteRemark");
 const onsiteRemarkCount = document.getElementById("onsiteRemarkCount");
 const exemptSection = document.getElementById("exemptSection");
@@ -105,6 +106,12 @@ document.addEventListener("click", (event) => {
 
   if (!event.target.closest("[data-select-root]")) {
     closeConditionPanel();
+  }
+
+  const stepperButton = event.target.closest("[data-stepper-action]");
+  if (stepperButton) {
+    updateNumberStepper(stepperButton);
+    return;
   }
 
   const scenarioButton = event.target.closest("[data-scenario-code]");
@@ -230,7 +237,9 @@ function openModal(supplierId) {
   conditionPanel.querySelectorAll("input[type='checkbox']").forEach((checkbox) => {
     checkbox.checked = false;
   });
-  onsiteExpectedDate.value = "";
+  onsiteInputs.forEach((input) => {
+    input.value = input.defaultValue;
+  });
   onsiteRemark.value = "";
   onsiteRemarkCount.textContent = "0/256";
 
@@ -617,6 +626,19 @@ function getConditionStatus(code) {
 function hasApiFailure(code) {
   const result = state.queryResults[code];
   return apiCodes.has(code) && result && result.status === "success" && !result.matched;
+}
+
+function updateNumberStepper(button) {
+  const input = button.parentElement.querySelector("input[type='number']");
+  if (!input) return;
+
+  const step = Number(input.step || 1);
+  const min = input.min === "" ? Number.NEGATIVE_INFINITY : Number(input.min);
+  const current = input.value === "" ? 0 : Number(input.value);
+  const direction = button.dataset.stepperAction === "increment" ? 1 : -1;
+  const nextValue = Math.max(min, current + direction * step);
+  input.value = String(nextValue);
+  input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 function confirmApply() {

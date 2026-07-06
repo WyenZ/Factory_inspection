@@ -201,6 +201,99 @@
               <strong>普通验厂流程</strong>
               <span>确定后进入待验厂，由相关负责人继续分配验厂任务。</span>
             </div>
+            <div class="factory-data-section" aria-labelledby="factoryDataTitle">
+              <h2 id="factoryDataTitle">预验厂信息</h2>
+              <div class="factory-data-grid">
+                <div class="factory-field required">
+                  <label for="factoryProjectNo">项目编号：</label>
+                  <input id="factoryProjectNo" type="text" placeholder="请输入项目编号" />
+                </div>
+                <div class="factory-field">
+                  <label for="factoryProjectName">项目名称：</label>
+                  <input id="factoryProjectName" type="text" placeholder="项目名称自动填充" readonly />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryContact">联系人：</label>
+                  <input id="factoryContact" type="text" placeholder="请输入联系人" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryTel">TEL：</label>
+                  <input id="factoryTel" type="text" placeholder="请输入TEL" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryMobile">手机号码：</label>
+                  <input id="factoryMobile" type="text" placeholder="请输入手机号码" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryEmail">Email：</label>
+                  <input id="factoryEmail" type="email" placeholder="请输入Email" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryTargetCountry">主要目标国家：</label>
+                  <input id="factoryTargetCountry" type="text" placeholder="请输入主要目标国家" />
+                </div>
+                <div class="factory-field">
+                  <label for="factoryArea">厂房面积(m²)：</label>
+                  <input id="factoryArea" type="number" min="0" step="0.01" placeholder="请输入厂房面积" />
+                </div>
+                <div class="factory-field">
+                  <label for="warehouseArea">仓库面积(m²)：</label>
+                  <input id="warehouseArea" type="number" min="0" step="0.01" placeholder="请输入仓库面积" />
+                </div>
+                <div class="factory-field required">
+                  <label for="productionDate">投产日期：</label>
+                  <input id="productionDate" type="date" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryStaffCount">工厂总人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少工厂总人数">−</button>
+                    <input id="factoryStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加工厂总人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="rdStaffCount">研发人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少研发人数">−</button>
+                    <input id="rdStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加研发人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="qcStaffCount">质检人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少质检人数">−</button>
+                    <input id="qcStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加质检人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="deliveryCycle">交货周期(天)：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少交货周期">−</button>
+                    <input id="deliveryCycle" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加交货周期">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="officeAddress">办公地址：</label>
+                  <input id="officeAddress" type="text" placeholder="请输入办公地址" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryAddress">工厂地址：</label>
+                  <input id="factoryAddress" type="text" placeholder="请输入工厂地址" />
+                </div>
+                <div class="factory-field required">
+                  <label for="mainProduct">主要生产产品：</label>
+                  <input id="mainProduct" type="text" placeholder="请输入主要生产产品" />
+                </div>
+                <div class="factory-field required">
+                  <label for="inspectionEquipment">主要检查设备：</label>
+                  <input id="inspectionEquipment" type="text" placeholder="请输入主要检查设备" />
+                </div>
+              </div>
+            </div>
             <div class="onsite-form">
               <div class="form-field full">
                 <label class="required-label" for="onsiteExpectedDate">期望验厂时间</label>
@@ -251,7 +344,7 @@
 
           <section class="validation-box" id="modalStatus" aria-live="polite">
             <span class="status-dot"></span>
-            <span>当前为普通验厂申请，可直接确定进入流程。</span>
+            <span>当前为普通验厂申请，请填写期望验厂时间。</span>
           </section>
         </div>
 

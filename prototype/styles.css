@@ -396,7 +396,7 @@ button {
 .modal {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  width: min(940px, calc(100vw - 72px));
+  width: min(1120px, calc(100vw - 72px));
   max-height: calc(100vh - 72px);
   border-radius: 8px;
   box-shadow: var(--shadow);
@@ -490,6 +490,107 @@ button {
   border-radius: 6px;
   background: #f5fbff;
   color: #43606f;
+}
+
+.factory-data-section {
+  margin-top: 20px;
+}
+
+.factory-data-section h2 {
+  margin: 0;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gray-200);
+  color: #343b47;
+  font-size: 18px;
+}
+
+.factory-data-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 20px;
+  margin-top: 20px;
+}
+
+.factory-field {
+  display: grid;
+  grid-template-columns: 136px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.factory-field label {
+  color: #596273;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.factory-field.required label::before {
+  content: "*";
+  margin-right: 4px;
+  color: var(--red-500);
+}
+
+.factory-field input {
+  width: 100%;
+  min-width: 0;
+  height: 38px;
+  border: 1px solid var(--gray-300);
+  border-radius: 5px;
+  padding: 0 12px;
+  color: #333b47;
+  outline: none;
+}
+
+.factory-field input[readonly] {
+  color: var(--gray-500);
+  background: #f4f6fa;
+}
+
+.factory-field input[type="number"] {
+  appearance: textfield;
+}
+
+.factory-field input[type="number"]::-webkit-inner-spin-button,
+.factory-field input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.number-stepper {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  height: 38px;
+}
+
+.number-stepper button,
+.number-stepper input {
+  height: 38px;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+}
+
+.number-stepper button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: #596273;
+  font-size: 20px;
+}
+
+.number-stepper button:first-child {
+  border-right: 0;
+  border-radius: 5px 0 0 5px;
+}
+
+.number-stepper button:last-child {
+  border-left: 0;
+  border-radius: 0 5px 5px 0;
+}
+
+.number-stepper input {
+  border-radius: 0;
+  text-align: left;
 }
 
 .onsite-form {
