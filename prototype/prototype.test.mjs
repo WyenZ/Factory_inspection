@@ -6,6 +6,10 @@ const html = readFileSync(new URL("./index.html", import.meta.url), "utf8");
 const app = readFileSync(new URL("./app.js", import.meta.url), "utf8");
 const css = readFileSync(new URL("./styles.css", import.meta.url), "utf8");
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function extractOnsiteSection() {
   const match = html.match(/<section class="form-block" id="onsiteSection">([\s\S]*?)<section class="form-block is-hidden" id="exemptSection">/);
   assert.ok(match, "ordinary inspection section should exist");
@@ -75,7 +79,18 @@ test("exemption flow uses manual supplement materials instead of API query", () 
     "实缴资本证明",
     "人工补充工商实缴资本证明",
     "请上传实缴资本证明",
+    "系统自动抓取",
+    "香港星商-CNY-银行转账-(优备对公)月结90天",
   ]) {
-    assert.match(app, new RegExp(expected), `${expected} should be present`);
+    assert.match(app, new RegExp(escapeRegExp(expected)), `${expected} should be present`);
+  }
+
+  for (const manualAccountText of [
+    "填写账期天数，例如 60",
+    "请填写账期",
+    "账期需不低于月结 60 天",
+    "data-account-code",
+  ]) {
+    assert.doesNotMatch(app, new RegExp(escapeRegExp(manualAccountText)), `${manualAccountText} should be removed`);
   }
 });

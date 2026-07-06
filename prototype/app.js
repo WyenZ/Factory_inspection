@@ -32,11 +32,12 @@ const conditionMeta = {
   },
   "1-4": {
     title: "工商实缴及账期达标",
-    desc: "人工补充工商实缴资本证明、商务协议并填写账期。",
+    desc: "人工补充工商实缴资本证明、商务协议，账期由系统自动抓取。",
   },
 };
 
 const orderedCodes = ["1-1", "1-2", "1-3", "1-4"];
+const autoPaymentTerm = "香港星商-CNY-银行转账-(优备对公)月结90天";
 const todayDate = new Date().toISOString().slice(0, 10);
 
 const state = {
@@ -44,7 +45,6 @@ const state = {
   inspectionType: "onsite",
   selectedConditions: new Set(),
   files: {},
-  accountDays: {},
   dateFields: {},
   touched: false,
 };
@@ -160,13 +160,6 @@ document.addEventListener("input", (event) => {
     return;
   }
 
-  const accountInput = event.target.closest("[data-account-code]");
-  if (accountInput) {
-    state.accountDays[accountInput.dataset.accountCode] = accountInput.value;
-    renderModalStatus();
-    return;
-  }
-
   const dateInput = event.target.closest("[data-date-code]");
   if (!dateInput) return;
   state.dateFields[dateStateKey(dateInput.dataset.dateCode, dateInput.dataset.dateField)] =
@@ -205,7 +198,6 @@ function openModal(supplierId) {
   state.inspectionType = "onsite";
   state.selectedConditions = new Set();
   state.files = {};
-  state.accountDays = {};
   state.dateFields = {};
   state.touched = false;
 
@@ -261,7 +253,7 @@ function renderConditionSections() {
   const selected = orderedCodes.filter((code) => state.selectedConditions.has(code));
   if (!selected.length) {
     conditionSections.innerHTML =
-      '<div class="empty-state">选择免验条件后，这里会展示对应人工补充材料、日期填写或账期填写要求。</div>';
+      '<div class="empty-state">选择免验条件后，这里会展示对应人工补充材料、日期填写或系统抓取信息。</div>';
     return;
   }
 
@@ -332,7 +324,7 @@ function renderConditionBody(code) {
     <div class="form-grid">
       ${renderUpload("1-4", "paidCapitalProof", "实缴资本证明", "人工补充工商实缴资本证明、验资报告等")}
       ${renderUpload("1-4", "businessAgreement", "商务协议", "可证明账期的协议材料")}
-      ${renderAccountInput("1-4", "账期", "填写账期天数，例如 60")}
+      ${renderAutoFetchedField("账期", autoPaymentTerm)}
     </div>
   `;
 }
@@ -358,18 +350,18 @@ function renderUpload(code, key, title, hint, options = {}) {
   `;
 }
 
-function renderAccountInput(code, label, placeholder) {
-  const value = state.accountDays[code] || "";
+function renderAutoFetchedField(label, value) {
   return `
     <div class="form-field">
-      <label for="account-${code}">${label}</label>
+      <span class="form-caption">
+        ${escapeHtml(label)}
+        <em class="optional-mark">系统自动抓取</em>
+      </span>
       <input
-        id="account-${code}"
-        type="number"
-        min="0"
+        id="auto-payment-term"
+        type="text"
+        readonly
         value="${escapeHtml(value)}"
-        placeholder="${placeholder}"
-        data-account-code="${code}"
       />
     </div>
   `;
@@ -432,12 +424,6 @@ function validateCondition(code) {
     }
     if (!state.files[fileStateKey("1-4", "businessAgreement")]) {
       messages.push("请上传商务协议");
-    }
-    const accountDays = Number(state.accountDays["1-4"] || 0);
-    if (!state.accountDays["1-4"]) {
-      messages.push("请填写账期");
-    } else if (accountDays < 60) {
-      messages.push("账期需不低于月结 60 天");
     }
   }
 
