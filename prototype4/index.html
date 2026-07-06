@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>供应商列表 - 申请验厂原型4</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="logo"><span>STAR</span>MERX</div>
+          <div class="system-name">星商供应商中心</div>
+        </div>
+
+        <nav class="nav">
+          <a href="#">○ 首页</a>
+          <a href="#">▣ 质检管理 <span>⌄</span></a>
+          <a class="open" href="#">□ 供应商管理 <em>New</em><span>⌃</span></a>
+          <a class="sub active" href="#">▤ 供应商列表</a>
+          <a class="sub" href="#">▥ 供应商审核</a>
+          <a class="sub" href="#">▥ 外部备案管理</a>
+          <a href="#">▭ 资料管理 <span>⌃</span></a>
+          <a class="sub" href="#">▤ 供应商列表</a>
+          <a class="sub" href="#">◇ 地址簿</a>
+          <a class="sub" href="#">▥ 供应商统计列表</a>
+          <a class="sub" href="#">◇ sku统计列表</a>
+          <a class="sub" href="#">♧ 泛精供应商升级审核</a>
+          <a class="sub" href="#">▰ 第三方付款方式审核</a>
+          <a class="sub" href="#">▣ 品牌验厂管理</a>
+          <a class="sub" href="#">▮ 样品质检</a>
+          <a class="sub" href="#">▧ 产前样管理</a>
+          <a class="sub" href="#">▦ 核价管理</a>
+          <a class="sub" href="#">▥ 大货质检报表</a>
+          <a class="sub" href="#">▣ 客诉管理</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <nav class="module-nav" aria-label="顶部模块">
+            <a href="#">⌂ 仓储中心</a>
+            <a href="#">⌁ 采购中心</a>
+            <a href="#">▱ 物流中心</a>
+            <a href="#">▧ 备货中心</a>
+          </nav>
+          <div class="notice">元必究，一查到底！不收回扣，不受宴请，不行贿索贿，不经营同类业务</div>
+          <div class="top-actions">
+            <button type="button" aria-label="下载">⇩</button>
+            <button type="button" aria-label="全屏">□</button>
+            <span class="avatar">管</span>
+            <span>管理员</span>
+          </div>
+        </header>
+
+        <section class="crumb" aria-label="面包屑">
+          <button type="button" aria-label="展开导航">☰</button>
+          <span>首页</span>
+          <span>›</span>
+          <span>供应商管理</span>
+          <span>›</span>
+          <strong>供应商列表</strong>
+        </section>
+
+        <section class="tabs" aria-label="页面标签">
+          <button type="button">首页</button>
+          <button class="current" type="button">供应商列表 ×</button>
+        </section>
+
+        <section class="panel">
+          <form class="filters" aria-label="筛选条件">
+            <input type="text" placeholder="供应商ID" />
+            <input type="text" placeholder="供应商名称" />
+            <input type="text" placeholder="供应商简称" />
+            <button class="select-like" type="button">供应商类型 <span>⌄</span></button>
+            <button class="select-like" type="button">经营类型 <span>⌄</span></button>
+            <button class="select-like wide" type="button">主营品线 <span>⌄</span></button>
+            <button class="select-like" type="button">支付方式 <span>⌄</span></button>
+            <button class="select-like" type="button">结算方式 <span>⌄</span></button>
+            <button class="select-like" type="button">审核类型 <span>⌄</span></button>
+            <button class="select-like" type="button">审核状态 <span>⌄</span></button>
+            <button class="select-like" type="button">国别 <span>⌄</span></button>
+            <button class="select-like" type="button">省份 <span>⌄</span></button>
+            <button class="select-like" type="button">城市 <span>⌄</span></button>
+            <input type="text" placeholder="负责人" />
+            <button class="select-like" type="button">Garvee丝印 <span>⌄</span></button>
+            <button class="select-like compact" type="button">标签 <span>⌄</span></button>
+            <input class="date-filter" type="text" placeholder="生效时间开始 - 生效时间结束" />
+            <button class="primary small" type="button">⌕ 查询</button>
+            <button class="ghost small" type="reset">↻ 重置</button>
+          </form>
+
+          <button class="primary add-button" type="button">＋ 新增供应商</button>
+
+          <div class="status-tabs" aria-label="供应商状态">
+            <button type="button">全部 (1245)</button>
+            <button type="button">草稿 (767)</button>
+            <button class="active" type="button">准入 (4)</button>
+            <button type="button">正式 (3)</button>
+            <button type="button">停用 (471)</button>
+          </div>
+
+          <div class="table-wrap">
+            <table class="supplier-table" aria-label="供应商列表">
+              <thead>
+                <tr>
+                  <th class="check"><input type="checkbox" aria-label="全选" /></th>
+                  <th>供应商</th>
+                  <th>经营信息</th>
+                  <th>联系信息</th>
+                  <th>交易信息</th>
+                  <th>供应商状态</th>
+                  <th>审核状态</th>
+                  <th>产品数量</th>
+                  <th>操作人员/操作时间</th>
+                  <th>使用人</th>
+                  <th class="operation-col">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-supplier-id="SUP26062271172">
+                  <td class="check"><input type="checkbox" aria-label="选择 SUP26062271172" /></td>
+                  <td>
+                    <div class="info-stack">
+                      <span>供应商ID：SUP26062271172</span>
+                      <span>供应商名称：<b class="link-text">⊙ 测试12332</b></span>
+                      <span>供应商简称：-</span>
+                      <span>供应商类型：渠道-线下</span>
+                      <span>供应链部门：七部</span>
+                      <span>供应链负责人：黄超群</span>
+                      <span>国别：中国</span>
+                      <span>省份：河北省</span>
+                      <span>城市：秦皇岛市</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span>经营类型：贸易类</span>
+                      <span>经营范围：123</span>
+                      <span>主营品线：农机</span>
+                      <span>法人代表：-</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span><b class="purple">（精品）</b>联系人：</span>
+                      <span>TEL/手机：- / -</span>
+                      <span>邮箱：-</span>
+                      <span>旺旺/QQ/微信：- / - / -</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span><b class="purple">（渠道）</b>支付方式：支付宝</span>
+                      <span>结算方式：阿里两月结10日</span>
+                    </div>
+                  </td>
+                  <td>准入</td>
+                  <td data-audit-cell>
+                    <div class="info-stack compact-stack">
+                      <span>验厂审核：无验厂记录</span>
+                      <span>供应商生效审核：</span>
+                      <b class="orange">待黄超群审核</b>
+                    </div>
+                  </td>
+                  <td><b class="teal">0</b></td>
+                  <td>
+                    <div class="info-stack compact-stack">
+                      <span>引入人/负责人：吴良 / 吴良</span>
+                      <span>创建时间：2026-06-22 07:31:46</span>
+                      <span>更新人：吴良</span>
+                      <span>更新时间：2026-07-02 18:19:05</span>
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>
+                    <div class="row-actions">
+                      <button type="button" data-action="detail">查看详情</button>
+                      <button type="button" data-action="edit">编辑资料</button>
+                      <button type="button" data-action="log">操作记录</button>
+                      <button type="button" data-action="apply-inspection">申请验厂</button>
+                      <button type="button" data-action="withdraw">撤回审核</button>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr data-supplier-id="SUP26070271177">
+                  <td class="check"><input type="checkbox" aria-label="选择 SUP26070271177" /></td>
+                  <td>
+                    <div class="info-stack">
+                      <span>供应商ID：SUP26070271177</span>
+                      <span>供应商名称：<b class="link-text">⊙ 材******2</b></span>
+                      <span>供应商简称：材料测试0702</span>
+                      <span>供应商类型：精品</span>
+                      <span>供应链部门：五部</span>
+                      <span>供应链负责人：杨鹏</span>
+                      <span>国别：中国</span>
+                      <span>省份：山西省</span>
+                      <span>城市：阳泉市</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span>经营类型：生产类</span>
+                      <span>经营范围：3212</span>
+                      <span>主营品线：轮胎</span>
+                      <span>法人代表：213</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span><b class="purple">（精品）</b>联系人：123</span>
+                      <span>TEL/手机：- / 321</span>
+                      <span>邮箱：-</span>
+                      <span>旺旺/QQ/微信：- / - / -</span>
+                      <span><b class="purple">（精品）</b>联系人：123</span>
+                      <span>TEL/手机：- / 321</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="info-stack">
+                      <span><b class="purple">（精品）</b>支付方式：银行转账</span>
+                      <span>结算方式：（星商对公）OA</span>
+                      <span>60天</span>
+                    </div>
+                  </td>
+                  <td>准入</td>
+                  <td data-audit-cell>
+                    <div class="info-stack compact-stack">
+                      <span>验厂审核：<b class="green">审核通过</b></span>
+                      <span>供应商生效审核：撤回</span>
+                    </div>
+                  </td>
+                  <td><b class="teal">0</b></td>
+                  <td>
+                    <div class="info-stack compact-stack">
+                      <span>引入人/负责人：吴良 / 吴良</span>
+                      <span>创建时间：2026-07-02 03:44:24</span>
+                      <span>更新人：吴良</span>
+                      <span>更新时间：2026-07-02 15:42:45</span>
+                    </div>
+                  </td>
+                  <td>-</td>
+                  <td>
+                    <div class="row-actions">
+                      <button type="button" data-action="detail">查看详情</button>
+                      <button type="button" data-action="edit">编辑资料</button>
+                      <button type="button" data-action="log">操作记录</button>
+                      <button type="button" data-action="apply-inspection">申请验厂</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <footer class="pager">
+            <span>共 4 条记录</span>
+            <button type="button">10条/页 <span>⌄</span></button>
+            <button type="button" aria-label="第一页">≪</button>
+            <button type="button" aria-label="上一页">‹</button>
+            <button class="page" type="button">1</button>
+            <button type="button" aria-label="下一页">›</button>
+            <button type="button" aria-label="最后一页">≫</button>
+            <span>前往</span>
+            <input value="1" aria-label="页码" />
+            <span>页</span>
+          </footer>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="inspectionModal" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <header class="modal-header">
+          <div>
+            <h1 id="modalTitle">申请验厂</h1>
+            <p id="modalSupplier">请选择验厂类型并提交申请材料</p>
+          </div>
+          <button class="icon-btn" id="closeModal" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <div class="modal-body">
+          <section class="form-block">
+            <div class="field-label">验厂类型</div>
+            <div class="segmented" role="radiogroup" aria-label="验厂类型">
+              <label>
+                <input type="radio" name="inspectionType" value="onsite" checked />
+                <span>普通验厂</span>
+              </label>
+              <label>
+                <input type="radio" name="inspectionType" value="exempt" />
+                <span>免验厂</span>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-block" id="onsiteSection">
+            <div class="flow-note">
+              <strong>普通验厂流程</strong>
+              <span>确定后进入待验厂，由相关负责人继续分配验厂任务。</span>
+            </div>
+            <div class="factory-data-section" aria-labelledby="factoryDataTitle">
+              <h2 id="factoryDataTitle">预验厂信息</h2>
+              <div class="factory-data-grid">
+                <div class="factory-field required">
+                  <label for="factoryProjectNo">项目编号：</label>
+                  <input id="factoryProjectNo" type="text" placeholder="请输入项目编号" />
+                </div>
+                <div class="factory-field">
+                  <label for="factoryProjectName">项目名称：</label>
+                  <input id="factoryProjectName" type="text" placeholder="项目名称自动填充" readonly />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryContact">联系人：</label>
+                  <input id="factoryContact" type="text" placeholder="请输入联系人" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryTel">TEL：</label>
+                  <input id="factoryTel" type="text" placeholder="请输入TEL" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryMobile">手机号码：</label>
+                  <input id="factoryMobile" type="text" placeholder="请输入手机号码" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryEmail">Email：</label>
+                  <input id="factoryEmail" type="email" placeholder="请输入Email" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryTargetCountry">主要目标国家：</label>
+                  <input id="factoryTargetCountry" type="text" placeholder="请输入主要目标国家" />
+                </div>
+                <div class="factory-field">
+                  <label for="factoryArea">厂房面积(m²)：</label>
+                  <input id="factoryArea" type="number" min="0" step="0.01" placeholder="请输入厂房面积" />
+                </div>
+                <div class="factory-field">
+                  <label for="warehouseArea">仓库面积(m²)：</label>
+                  <input id="warehouseArea" type="number" min="0" step="0.01" placeholder="请输入仓库面积" />
+                </div>
+                <div class="factory-field required">
+                  <label for="productionDate">投产日期：</label>
+                  <input id="productionDate" type="date" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryStaffCount">工厂总人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少工厂总人数">−</button>
+                    <input id="factoryStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加工厂总人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="rdStaffCount">研发人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少研发人数">−</button>
+                    <input id="rdStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加研发人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="qcStaffCount">质检人数：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少质检人数">−</button>
+                    <input id="qcStaffCount" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加质检人数">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="deliveryCycle">交货周期(天)：</label>
+                  <div class="number-stepper">
+                    <button type="button" data-stepper-action="decrement" aria-label="减少交货周期">−</button>
+                    <input id="deliveryCycle" type="number" min="0" step="1" />
+                    <button type="button" data-stepper-action="increment" aria-label="增加交货周期">+</button>
+                  </div>
+                </div>
+                <div class="factory-field required">
+                  <label for="officeAddress">办公地址：</label>
+                  <input id="officeAddress" type="text" placeholder="请输入办公地址" />
+                </div>
+                <div class="factory-field required">
+                  <label for="factoryAddress">工厂地址：</label>
+                  <input id="factoryAddress" type="text" placeholder="请输入工厂地址" />
+                </div>
+                <div class="factory-field required">
+                  <label for="mainProduct">主要生产产品：</label>
+                  <input id="mainProduct" type="text" placeholder="请输入主要生产产品" />
+                </div>
+                <div class="factory-field required">
+                  <label for="inspectionEquipment">主要检查设备：</label>
+                  <input id="inspectionEquipment" type="text" placeholder="请输入主要检查设备" />
+                </div>
+              </div>
+            </div>
+            <div class="onsite-form">
+              <div class="form-field full">
+                <label class="required-label" for="onsiteExpectedDate">期望验厂时间</label>
+                <input id="onsiteExpectedDate" type="date" />
+              </div>
+              <div class="form-field full">
+                <label for="onsiteRemark">备注</label>
+                <div class="textarea-wrap">
+                  <textarea id="onsiteRemark" maxlength="256" placeholder="请输入备注"></textarea>
+                  <span id="onsiteRemarkCount">0/256</span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="form-block is-hidden" id="exemptSection">
+            <div class="field-label">免验厂条件</div>
+            <div class="multi-select" data-select-root>
+              <button class="select-trigger" id="conditionTrigger" type="button" aria-expanded="false">
+                <span id="conditionTriggerText">请选择 1-1 到 1-4，可多选</span>
+                <span>⌄</span>
+              </button>
+              <div class="select-panel" id="conditionPanel" aria-hidden="true">
+                <label>
+                  <input type="checkbox" value="1-1" />
+                  <span>1-1 有效期内三方验厂通过</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="1-2" />
+                  <span>1-2 主板上市公司</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="1-3" />
+                  <span>1-3 标杆大卖背书</span>
+                </label>
+                <label>
+                  <input type="checkbox" value="1-4" />
+                  <span>1-4 工商实缴及账期达标</span>
+                </label>
+              </div>
+            </div>
+            <div class="condition-chips" id="conditionChips"></div>
+
+            <div class="condition-stack" id="conditionSections">
+              <div class="empty-state">选择免验条件后，这里会展示对应人工补充材料、日期填写或系统抓取信息。</div>
+            </div>
+          </section>
+
+          <section class="validation-box" id="modalStatus" aria-live="polite">
+            <span class="status-dot"></span>
+            <span>当前为普通验厂申请，请填写期望验厂时间。</span>
+          </section>
+        </div>
+
+        <footer class="modal-footer">
+          <button class="secondary-btn" id="cancelModal" type="button">取消</button>
+          <button class="primary-btn" id="confirmApply" type="button">确定</button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js"></script>
+  </body>
+</html>
