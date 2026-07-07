@@ -26,12 +26,19 @@ const evidenceMap = {
   },
   listed: {
     title: "上市公司",
-    type: "API 查询",
+    type: "上传资料",
     fields: [
-      ["查询主体", "广东星海智能制造股份有限公司"],
-      ["上市板块", "深交所主板"],
-      ["股票代码", "002681"],
-      ["查询时间", "2026-03-05 10:21:36"],
+      [
+        "上市证明材料",
+        {
+          fileName: "listed_company_proof.pdf",
+          fileType: "PDF",
+          fileSize: "1.1 MB",
+          fileNo: "LISTED-PROOF-20260304",
+          desc: "人工补充主板上市证明材料、证券交易所公告、股票代码截图等",
+        },
+      ],
+      ["审核口径", "人工补充上市公司证明材料，由审核人员人工确认"],
     ],
   },
   seller: {
@@ -62,12 +69,29 @@ const evidenceMap = {
   },
   capital: {
     title: "实缴资本",
-    type: "API + 手填",
+    type: "上传资料",
     fields: [
-      ["查询主体", "深圳市拓海家居用品有限公司"],
-      ["工商实缴资本", "2600 万元 RMB"],
-      ["商务协议", "payment_terms_agreement.pdf"],
-      ["账期", "月结 90 天"],
+      [
+        "实缴资本证明",
+        {
+          fileName: "paid_capital_proof.pdf",
+          fileType: "PDF",
+          fileSize: "1.3 MB",
+          fileNo: "CAPITAL-PROOF-20260303",
+          desc: "人工补充工商实缴资本证明、验资报告等",
+        },
+      ],
+      [
+        "商务协议",
+        {
+          fileName: "payment_terms_agreement.pdf",
+          fileType: "PDF",
+          fileSize: "1.8 MB",
+          fileNo: "PAYMENT-TERMS-20260303",
+          desc: "可证明账期的协议材料",
+        },
+      ],
+      ["账期", "香港星商-CNY-银行转账-(优备对公)月结90天"],
     ],
   },
 };
@@ -171,10 +195,13 @@ const stageLabels = {
 let activeRow = null;
 let activeAuditRow = null;
 let currentStage = "processing";
+let currentInspectionType = "all";
 
 const tableHead = document.getElementById("tableHead");
 const tableBody = document.getElementById("tableBody");
 const statusTabs = document.getElementById("statusTabs");
+const inspectionTypeFilter = document.getElementById("inspectionTypeFilter");
+const resetFilters = document.getElementById("resetFilters");
 const modal = document.getElementById("assignModal");
 const auditModal = document.getElementById("auditModal");
 const modalSupplier = document.getElementById("modalSupplier");
@@ -213,6 +240,17 @@ statusTabs.addEventListener("click", (event) => {
   const stageButton = event.target.closest("[data-stage]");
   if (!stageButton) return;
   currentStage = stageButton.dataset.stage;
+  renderRows();
+});
+
+inspectionTypeFilter.addEventListener("change", () => {
+  currentInspectionType = inspectionTypeFilter.value;
+  renderRows();
+});
+
+resetFilters.addEventListener("click", () => {
+  currentInspectionType = "all";
+  inspectionTypeFilter.value = "all";
   renderRows();
 });
 
@@ -266,8 +304,9 @@ function renderRows() {
   renderStatusTabs();
   renderTableHead();
 
-  const visibleRows =
+  const stageRows =
     currentStage === "all" ? rows : rows.filter((row) => row.stage === currentStage);
+  const visibleRows = stageRows.filter(matchesInspectionType);
 
   tableBody.innerHTML = visibleRows
     .map(
@@ -408,12 +447,10 @@ function renderReviewActions(row) {
 }
 
 function renderSupplier(row) {
-  const tags = row.isExempt || row.conditions.length
-    ? `<div class="tag-row">
-        <span class="tag exempt">免验厂</span>
-        ${row.conditions.map((condition) => renderTag(condition)).join("")}
-      </div>`
-    : "";
+  const tags = `<div class="tag-row">
+    ${renderInspectionTypeTag(row)}
+    ${row.isExempt ? row.conditions.map((condition) => renderTag(condition)).join("") : ""}
+  </div>`;
 
   return `
     <div class="supplier-cell">
@@ -422,6 +459,18 @@ function renderSupplier(row) {
       ${tags}
     </div>
   `;
+}
+
+function matchesInspectionType(row) {
+  if (currentInspectionType === "regular") return !row.isExempt;
+  if (currentInspectionType === "exempt") return row.isExempt;
+  return true;
+}
+
+function renderInspectionTypeTag(row) {
+  const label = row.isExempt ? "免验厂" : "普通验厂";
+  if (row.isExempt) return `<span class="tag exempt">${label}</span>`;
+  return `<span class="tag regular">${label}</span>`;
 }
 
 function renderTag(condition) {
@@ -474,11 +523,8 @@ function openAssignModal(row) {
   modalSupplier.innerHTML = `
     <strong>${escapeHtml(row.supplierId)}</strong>
     <span> / ${escapeHtml(row.supplierName)}</span>
-    ${
-      row.conditions.length
-        ? `<span class="tag exempt">免验厂</span>${row.conditions.map((condition) => renderTag(condition)).join("")}`
-        : ""
-    }
+    ${renderInspectionTypeTag(row)}
+    ${row.isExempt ? row.conditions.map((condition) => renderTag(condition)).join("") : ""}
   `;
   document.querySelector('input[name="useExemption"][value="no"]').checked = true;
   document.querySelector('input[name="useExemption"][value="yes"]').checked = false;
@@ -539,7 +585,12 @@ function renderEvidenceCard(evidence, condition) {
 function renderEvidenceValue(value) {
   if (!value || typeof value !== "object") return escapeHtml(value);
   const payload = encodeURIComponent(JSON.stringify(value));
-  return `<a class="file-link" href="#" data-file-preview="${payload}">📎 ${escapeHtml(value.fileName)}</a>`;
+  return `
+    <a class="file-link evidence-file" href="#" data-file-preview="${payload}">
+      <span class="file-link-name">${escapeHtml(value.fileName)}</span>
+      ${value.desc ? `<span class="file-link-desc">${escapeHtml(value.desc)}</span>` : ""}
+    </a>
+  `;
 }
 
 function openFilePreview(encodedFile) {

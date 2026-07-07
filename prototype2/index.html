@@ -70,13 +70,19 @@
             <div class="field wide muted">请选择⌄</div>
             <label>项目类型</label>
             <div class="field wide muted">请选择⌄</div>
+            <label for="inspectionTypeFilter">验厂类型</label>
+            <select class="field wide inspection-type-filter" id="inspectionTypeFilter" aria-label="验厂类型">
+              <option value="all">请选择</option>
+              <option value="regular">普通验厂</option>
+              <option value="exempt">免验厂</option>
+            </select>
             <label>验厂申请时间</label>
             <div class="date-range"><span>▦ 开始日期</span><b>至</b><span>结束日期</span></div>
             <label>期望验厂时间</label>
             <div class="date-range"><span>▦ 开始日期</span><b>至</b><span>结束日期</span></div>
             <button class="teal" type="button">导出</button>
             <button class="teal" type="button">查询</button>
-            <button type="button">重置</button>
+            <button id="resetFilters" type="button">重置</button>
           </div>
 
           <div class="standard">供应商验厂审核标准：品牌七部 ≥ 75分，视为通过；　其他品部 ≥ 60分，视为通过。</div>
@@ -188,7 +194,7 @@
           </section>
 
           <section class="exemption-section is-hidden" id="exemptionSection">
-            <div class="section-title">免验厂资料 / API 查询结果</div>
+            <div class="section-title">免验厂资料</div>
             <div class="exemption-content" id="exemptionContent"></div>
           </section>
         </div>

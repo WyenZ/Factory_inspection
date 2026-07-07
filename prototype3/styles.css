@@ -229,6 +229,10 @@ input.field {
   outline: none;
 }
 
+select.field {
+  outline: none;
+}
+
 .muted {
   color: #b3bac7;
 }
@@ -388,6 +392,11 @@ input.field {
 .tag.exempt {
   color: #0b7c74;
   background: #dff8f5;
+}
+
+.tag.regular {
+  color: #4c6275;
+  background: #e9f0f7;
 }
 
 .tag.third {

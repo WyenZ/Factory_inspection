@@ -229,6 +229,10 @@ input.field {
   outline: none;
 }
 
+select.field {
+  outline: none;
+}
+
 .muted {
   color: #b3bac7;
 }
@@ -384,6 +388,11 @@ input.field {
 .tag.exempt {
   color: #0b7c74;
   background: #dff8f5;
+}
+
+.tag.regular {
+  color: #4c6275;
+  background: #e9f0f7;
 }
 
 .tag.third {
@@ -692,6 +701,21 @@ input.field {
   color: var(--blue);
   font-weight: 700;
   text-decoration: none;
+}
+
+.evidence-file {
+  display: inline-grid;
+  gap: 4px;
+}
+
+.file-link-name {
+  font-weight: 700;
+}
+
+.file-link-desc {
+  color: #929ba9;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .file-link:hover {

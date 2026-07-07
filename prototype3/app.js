@@ -193,10 +193,13 @@ const stageLabels = {
 let activeRow = null;
 let activeAuditRow = null;
 let currentStage = "review";
+let currentInspectionType = "all";
 
 const tableHead = document.getElementById("tableHead");
 const tableBody = document.getElementById("tableBody");
 const statusTabs = document.getElementById("statusTabs");
+const inspectionTypeFilter = document.getElementById("inspectionTypeFilter");
+const resetFilters = document.getElementById("resetFilters");
 const modal = document.getElementById("assignModal");
 const auditModal = document.getElementById("auditModal");
 const modalSupplier = document.getElementById("modalSupplier");
@@ -235,6 +238,17 @@ statusTabs.addEventListener("click", (event) => {
   const stageButton = event.target.closest("[data-stage]");
   if (!stageButton) return;
   currentStage = stageButton.dataset.stage;
+  renderRows();
+});
+
+inspectionTypeFilter.addEventListener("change", () => {
+  currentInspectionType = inspectionTypeFilter.value;
+  renderRows();
+});
+
+resetFilters.addEventListener("click", () => {
+  currentInspectionType = "all";
+  inspectionTypeFilter.value = "all";
   renderRows();
 });
 
@@ -289,8 +303,9 @@ function renderRows() {
   renderStatusTabs();
   renderTableHead();
 
-  const visibleRows =
+  const stageRows =
     currentStage === "all" ? rows : rows.filter((row) => row.stage === currentStage);
+  const visibleRows = stageRows.filter(matchesInspectionType);
 
   tableBody.innerHTML = visibleRows
     .map(
@@ -431,12 +446,10 @@ function renderReviewActions(row) {
 }
 
 function renderSupplier(row) {
-  const tags = row.isExempt
-    ? `<div class="tag-row">
-        <span class="tag exempt">免验厂</span>
-        ${row.conditions.map((condition) => renderTag(condition)).join("")}
-      </div>`
-    : "";
+  const tags = `<div class="tag-row">
+    ${renderInspectionTypeTag(row)}
+    ${row.isExempt ? row.conditions.map((condition) => renderTag(condition)).join("") : ""}
+  </div>`;
 
   return `
     <div class="supplier-cell">
@@ -445,6 +458,18 @@ function renderSupplier(row) {
       ${tags}
     </div>
   `;
+}
+
+function matchesInspectionType(row) {
+  if (currentInspectionType === "regular") return !row.isExempt;
+  if (currentInspectionType === "exempt") return row.isExempt;
+  return true;
+}
+
+function renderInspectionTypeTag(row) {
+  const label = row.isExempt ? "免验厂" : "普通验厂";
+  if (row.isExempt) return `<span class="tag exempt">${label}</span>`;
+  return `<span class="tag regular">${label}</span>`;
 }
 
 function renderTag(condition) {
@@ -507,11 +532,8 @@ function openAssignModal(row) {
   modalSupplier.innerHTML = `
     <strong>${escapeHtml(row.supplierId)}</strong>
     <span> / ${escapeHtml(row.supplierName)}</span>
-    ${
-      row.conditions.length
-        ? `<span class="tag exempt">免验厂</span>${row.conditions.map((condition) => renderTag(condition)).join("")}`
-        : ""
-    }
+    ${renderInspectionTypeTag(row)}
+    ${row.isExempt ? row.conditions.map((condition) => renderTag(condition)).join("") : ""}
   `;
   document.querySelector('input[name="useExemption"][value="no"]').checked = true;
   document.querySelector('input[name="useExemption"][value="yes"]').checked = false;
