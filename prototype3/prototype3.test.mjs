@@ -12,6 +12,11 @@ test("filters include inspection type dropdown options", () => {
   assert.match(html, /<option value="exempt">免验厂<\/option>/);
 });
 
+test("prototype3 assets use versioned URLs so GitHub Pages refreshes stale scripts", () => {
+  assert.match(html, /href="\.\/styles\.css\?v=prototype3-/);
+  assert.match(html, /src="\.\/app\.js\?v=prototype3-/);
+});
+
 test("non-exempt supplier rows render regular inspection tags", () => {
   assert.match(app, /renderInspectionTypeTag/);
   assert.match(app, /row\.isExempt \? "免验厂" : "普通验厂"/);
