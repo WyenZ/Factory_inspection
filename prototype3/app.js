@@ -658,9 +658,11 @@ function renderNormalActions(row) {
 }
 
 function renderReviewActions(row) {
+  const auditAttributes = row.isExempt ? 'disabled aria-disabled="true" title="免验厂无需审核"' : `data-audit="${escapeHtml(row.supplierId)}"`;
+  const auditDisabledClass = row.isExempt ? "disabled" : "";
   return `
     <div class="actions">
-      <button class="assign" type="button" data-audit="${escapeHtml(row.supplierId)}">审核</button>
+      <button class="assign ${auditDisabledClass}" type="button" ${auditAttributes}>审核</button>
       <button class="note" type="button">备注</button>
       <button class="log" type="button">日志</button>
     </div>
@@ -775,12 +777,19 @@ function openAuditModal(row) {
 
 function updateAuditReportSummary() {
   const summary = document.getElementById("auditReportSummary");
+  const reportButton = document.getElementById("openReportModal");
   if (!activeAuditRow) {
     summary.textContent = "请选择待审核记录";
+    reportButton.disabled = true;
+    reportButton.setAttribute("aria-disabled", "true");
+    reportButton.title = "请选择待审核记录";
     return;
   }
   const type = activeAuditRow.isExempt ? "免验厂" : "普通验厂";
   summary.textContent = `${type} / ${activeAuditRow.supplierId} / ${activeAuditRow.projectNo}`;
+  reportButton.disabled = activeAuditRow.isExempt;
+  reportButton.setAttribute("aria-disabled", String(activeAuditRow.isExempt));
+  reportButton.title = activeAuditRow.isExempt ? "免验厂无需查看验厂报告" : "";
 }
 
 function openReportModal() {

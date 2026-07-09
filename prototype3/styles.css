@@ -461,6 +461,11 @@ select.field {
   color: var(--teal-dark);
 }
 
+.actions button:disabled {
+  color: #a8b2bf;
+  cursor: not-allowed;
+}
+
 .actions .reject {
   color: var(--red);
 }
@@ -821,6 +826,12 @@ select.field {
   color: var(--white);
   background: var(--teal);
   font-weight: 700;
+}
+
+.report-view-button:disabled {
+  color: #8c98a8;
+  background: #e5eaf1;
+  cursor: not-allowed;
 }
 
 #auditReportSummary {
