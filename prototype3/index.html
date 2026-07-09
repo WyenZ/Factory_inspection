@@ -135,19 +135,11 @@
             </select>
           </section>
 
-          <section class="form-row upload-row">
-            <label>更新验厂报告</label>
-            <div>
-              <button class="primary file-button" type="button">选择文件</button>
-              <p>支持文件格式： pdf,docx,pptx,xlsx,doc,xls；且不超过200M</p>
-            </div>
-          </section>
-
-          <section class="form-row upload-row">
-            <label>更新不合格项</label>
-            <div>
-              <button class="primary file-button" type="button">选择文件</button>
-              <p>支持文件格式： pdf,docx,pptx,xlsx,doc,xls；且不超过200M</p>
+          <section class="form-row">
+            <label>验厂报告</label>
+            <div class="audit-report-entry">
+              <button class="report-view-button" type="button" id="openReportModal">查看验厂报告</button>
+              <span id="auditReportSummary">请选择待审核记录</span>
             </div>
           </section>
 
@@ -162,6 +154,249 @@
           <button class="primary" type="button" id="confirmAuditModal">确 定</button>
         </footer>
       </div>
+    </div>
+
+    <div class="modal-backdrop" id="reportModal" aria-hidden="true">
+      <article class="modal" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+        <header class="modal-head">
+          <div class="modal-title-wrap">
+            <h1 class="modal-title" id="reportTitle">提交验厂报告</h1>
+            <div class="modal-meta" id="reportMeta">
+              <span>供应商：宁波市乐*****有限公司</span><span>项目：B20260309BNFD 圣诞球-SY</span><span>状态：待验厂</span>
+            </div>
+          </div>
+          <button class="close js-close-report" type="button" aria-label="关闭">×</button>
+        </header>
+
+        <nav class="report-tabs" aria-label="验厂报告模块">
+          <button class="report-tab active" type="button" data-panel="basic">基础信息</button>
+          <button class="report-tab" type="button" data-panel="checks">验厂检查项</button>
+          <button class="report-tab" type="button" data-panel="result">验厂结论</button>
+          <button class="report-tab" type="button" data-panel="photos">照片</button>
+        </nav>
+
+        <div class="modal-body">
+          <section class="panel active" id="panel-basic">
+            <div class="section-head">
+              <h2 class="section-title">基础信息</h2>
+              <span class="section-sub">供应商、验厂方式、认证与生产能力信息</span>
+            </div>
+            <div class="form-grid">
+              <div class="form-row">
+                <label class="label">验厂人员：</label>
+                <div class="readonly" id="reportInspector">何鹏程</div>
+              </div>
+              <div class="form-row">
+                <label class="label required">验厂方式：</label>
+                <select class="control" id="reportMethod">
+                  <option>实地验厂</option>
+                  <option>视频验厂</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="label required">验厂时间：</label>
+                <input class="control" id="reportDate" type="date" value="2026-07-01" />
+              </div>
+              <div class="form-row">
+                <label class="label required">供应商名称：</label>
+                <input class="control" id="reportSupplierName" value="宁波市乐*****有限公司" />
+              </div>
+              <div class="form-row">
+                <label class="label required">公司地址：</label>
+                <input class="control" id="reportAddress" value="浙江省宁波市海曙区样例工业园" />
+              </div>
+              <div class="form-row">
+                <label class="label">成立日期：</label>
+                <input class="control" id="reportFoundedDate" type="date" value="2016-08-18" />
+              </div>
+              <div class="form-row">
+                <label class="label required">生产产品：</label>
+                <input class="control" id="reportProduct" value="节庆装饰品、塑料配件" />
+              </div>
+              <div class="form-row">
+                <label class="label">法人代表：</label>
+                <input class="control" id="reportLegalPerson" value="林海明" />
+              </div>
+              <div class="form-row">
+                <label class="label required">产品品线：</label>
+                <select class="control" id="reportProductLine">
+                  <option>节庆装饰</option>
+                  <option>家居日用</option>
+                  <option>厨房电器</option>
+                  <option>玩具用品</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label class="label required">计划供货产品：</label>
+                <input class="control" id="reportPlanProduct" value="圣诞球、挂饰、礼品包装件" />
+              </div>
+              <div class="form-row">
+                <label class="label">员工总数：</label>
+                <input class="control" id="reportEmployees" type="number" value="186" />
+              </div>
+              <div class="form-row">
+                <label class="label">品质人数：</label>
+                <input class="control" id="reportQualityStaff" type="number" value="18" />
+              </div>
+              <div class="form-row">
+                <label class="label">开发人数：</label>
+                <input class="control" id="reportDevStaff" type="number" value="12" />
+              </div>
+              <div class="form-row">
+                <label class="label">生产能力：</label>
+                <input class="control" id="reportCapacity" value="月产 80 万件" />
+              </div>
+              <div class="form-row full">
+                <label class="label">主要客户：</label>
+                <textarea class="textarea" id="reportCustomers">欧美大型商超客户、跨境电商客户、节庆用品品牌客户</textarea>
+              </div>
+              <div class="form-row full">
+                <label class="label">体系认证：</label>
+                <div class="choice-box">
+                  <label class="pill-choice"><input type="radio" name="system-cert" value="yes" aria-label="体系认证-有" /> 有</label>
+                  <label class="pill-choice"><input type="radio" name="system-cert" value="no" aria-label="体系认证-无" checked /> 无</label>
+                  <div class="cert-extra" data-cert-options="system" hidden>
+                    <button class="cert-select-button" type="button" data-cert-trigger="system">
+                      <span class="cert-summary" data-cert-summary="system">请选择体系认证</span>
+                      <span class="cert-arrow">▼</span>
+                    </button>
+                    <div class="cert-menu">
+                      <label class="pill-choice"><input type="checkbox" checked /> ISO9001质量管理体系</label>
+                      <label class="pill-choice"><input type="checkbox" /> ISO14001环境管理体系</label>
+                      <label class="pill-choice"><input type="checkbox" /> ISO45001职业健康安全</label>
+                      <label class="pill-choice"><input type="checkbox" /> SA8000社会责任标准</label>
+                      <label class="pill-choice"><input type="checkbox" /> ICTI玩具行业</label>
+                      <input class="control cert-other" placeholder="其它认证" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-row full">
+                <label class="label">产品认证：</label>
+                <div class="choice-box">
+                  <label class="pill-choice"><input type="radio" name="product-cert" value="yes" aria-label="产品认证-有" /> 有</label>
+                  <label class="pill-choice"><input type="radio" name="product-cert" value="no" aria-label="产品认证-无" checked /> 无</label>
+                  <div class="cert-extra" data-cert-options="product" hidden>
+                    <button class="cert-select-button" type="button" data-cert-trigger="product">
+                      <span class="cert-summary" data-cert-summary="product">请选择产品认证</span>
+                      <span class="cert-arrow">▼</span>
+                    </button>
+                    <div class="cert-menu">
+                      <label class="pill-choice"><input type="checkbox" checked /> CE</label>
+                      <label class="pill-choice"><input type="checkbox" /> UL</label>
+                      <label class="pill-choice"><input type="checkbox" /> ETL</label>
+                      <label class="pill-choice"><input type="checkbox" /> FCC</label>
+                      <label class="pill-choice"><input type="checkbox" /> FDA</label>
+                      <label class="pill-choice"><input type="checkbox" checked /> ROHS</label>
+                      <label class="pill-choice"><input type="checkbox" /> CPC</label>
+                      <input class="control cert-other" placeholder="其它认证" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-checks">
+            <div class="section-head">
+              <div>
+                <h2 class="section-title">验厂检查项</h2>
+                <div class="section-sub">按预设检查内容选择得分，系统同步计算验厂结论</div>
+              </div>
+            </div>
+            <div class="score-toolbar">
+              <div class="category-tabs" id="categoryTabs"></div>
+              <div class="score-card">
+                <span>当前实际得分 <strong id="toolbarScore">0</strong></span>
+                <span>达成率 <strong id="toolbarRate">0%</strong></span>
+                <span>判定 <strong id="toolbarJudge">不合格</strong></span>
+              </div>
+            </div>
+            <div class="check-table-wrap">
+              <table class="check-table" aria-label="验厂检查评分表">
+                <thead>
+                  <tr>
+                    <th rowspan="2" style="width:150px;">项目</th>
+                    <th rowspan="2" style="width:410px;">检查内容</th>
+                    <th colspan="3">评分</th>
+                    <th rowspan="2" style="width:160px;">得分</th>
+                    <th rowspan="2" style="width:260px;">备注</th>
+                  </tr>
+                  <tr>
+                    <th style="width:110px;">不符</th>
+                    <th style="width:110px;">部分不符</th>
+                    <th style="width:110px;">符合</th>
+                  </tr>
+                </thead>
+                <tbody id="checkRows"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="panel" id="panel-result">
+            <div class="section-head">
+              <h2 class="section-title">验厂结论</h2>
+              <span class="section-sub">根据检查项自动计算，验厂人员补充 SQE 意见与整改建议</span>
+            </div>
+            <div class="rule-box">
+              说明：实际得分 = 综合达成率 * 100<br />
+              75-100 分：合格，可以正常合作<br />
+              60-75 分：合格，但需要辅导提升<br />
+              60分以下：不合格
+            </div>
+            <table class="result-table" aria-label="验厂结论表">
+              <thead>
+                <tr>
+                  <th style="width:22%;">项目</th>
+                  <th>实际评分</th>
+                  <th style="width:24%;">满分</th>
+                  <th style="width:24%;">达成率%</th>
+                </tr>
+              </thead>
+              <tbody id="resultRows"></tbody>
+              <tbody>
+                <tr>
+                  <td>实际得分</td>
+                  <td colspan="3"><strong id="finalScore">0分（综合达成率*100）分</strong></td>
+                </tr>
+                <tr>
+                  <td>总判定</td>
+                  <td colspan="3"><span class="judgement fail" id="finalJudge">不合格</span></td>
+                </tr>
+                <tr>
+                  <td>SQE意见</td>
+                  <td colspan="3"><textarea class="textarea" id="reportSqeOpinion" placeholder="填写验厂意见、合作建议或整改要求">建议进入供应商准入审核，后续按评分结果跟进整改。</textarea></td>
+                </tr>
+                <tr>
+                  <td>不合格项说明</td>
+                  <td colspan="3"><textarea class="textarea" id="reportIssueDesc" placeholder="填写问题描述、涉及区域和责任部门">关键过程文件和现场标识需继续完善。</textarea></td>
+                </tr>
+                <tr>
+                  <td>整改建议</td>
+                  <td colspan="3"><textarea class="textarea" id="reportRectifyAdvice" placeholder="填写后续整改方向、期限和跟进要求">建议 30 天内补充整改计划并复核。</textarea></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section class="panel" id="panel-photos">
+            <div class="section-head">
+              <h2 class="section-title">照片</h2>
+              <span class="section-sub">按验厂场景分类上传现场照片</span>
+            </div>
+            <div class="photos-grid" id="photoGrid"></div>
+          </section>
+        </div>
+
+        <footer class="modal-foot">
+          <div class="foot-left" id="saveState">当前为演示原型，数据仅在本页面临时展示</div>
+          <div class="foot-actions">
+            <button class="btn js-close-report" type="button">取消</button>
+            <button class="btn ghost" id="saveDraft" type="button">保存草稿</button>
+            <button class="btn primary" id="submitReport" type="button">更新</button>
+          </div>
+        </footer>
+      </article>
     </div>
 
     <div class="modal-mask" id="assignModal" aria-hidden="true">
