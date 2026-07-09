@@ -81,12 +81,14 @@ test("online report uses complete inspection checklist from source prototype", (
   assert.match(app, /const fullTotal = reportCategoryConfig\.find\(\(category\) => category\.name === "全部"\)\?\.full/);
 });
 
-test("exempt inspection rows disable audit and report buttons", () => {
+test("exempt inspection rows keep audit available but disable report viewing", () => {
   assert.match(app, /function renderReviewActions\(row\)/);
-  assert.match(app, /row\.isExempt \? 'disabled aria-disabled="true" title="免验厂无需审核"' : `data-audit="\$\{escapeHtml\(row\.supplierId\)\}"`/);
-  assert.match(app, /row\.isExempt \? "disabled" : ""/);
+  assert.match(app, /data-audit="\$\{escapeHtml\(row\.supplierId\)\}"/);
+  assert.doesNotMatch(app, /免验厂无需审核/);
+  assert.doesNotMatch(app, /auditDisabledClass/);
   assert.match(app, /reportButton\.disabled = activeAuditRow\.isExempt;/);
   assert.match(app, /reportButton\.setAttribute\("aria-disabled", String\(activeAuditRow\.isExempt\)\);/);
-  assert.match(css, /\.actions button:disabled/);
+  assert.match(app, /if \(activeAuditRow\.isExempt\) return;/);
+  assert.doesNotMatch(css, /\.actions button:disabled/);
   assert.match(css, /\.report-view-button:disabled/);
 });

@@ -461,11 +461,6 @@ select.field {
   color: var(--teal-dark);
 }
 
-.actions button:disabled {
-  color: #a8b2bf;
-  cursor: not-allowed;
-}
-
 .actions .reject {
   color: var(--red);
 }

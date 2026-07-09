@@ -658,11 +658,9 @@ function renderNormalActions(row) {
 }
 
 function renderReviewActions(row) {
-  const auditAttributes = row.isExempt ? 'disabled aria-disabled="true" title="免验厂无需审核"' : `data-audit="${escapeHtml(row.supplierId)}"`;
-  const auditDisabledClass = row.isExempt ? "disabled" : "";
   return `
     <div class="actions">
-      <button class="assign ${auditDisabledClass}" type="button" ${auditAttributes}>审核</button>
+      <button class="assign" type="button" data-audit="${escapeHtml(row.supplierId)}">审核</button>
       <button class="note" type="button">备注</button>
       <button class="log" type="button">日志</button>
     </div>
@@ -794,6 +792,7 @@ function updateAuditReportSummary() {
 
 function openReportModal() {
   if (!activeAuditRow) return;
+  if (activeAuditRow.isExempt) return;
   restoreAuditAfterReport = auditModal.classList.contains("open");
   if (restoreAuditAfterReport) {
     auditModal.classList.remove("open");
